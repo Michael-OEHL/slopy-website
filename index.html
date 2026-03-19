@@ -1,626 +1,791 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" id="html-root">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slopy — Zero Friction. Smart Assets. Perfect Slopes.</title>
-<meta name="description" content="Der erste digitale Service für Premium-Ski-Equipment. Buche in 60 Sekunden. Verfolge jeden Status live. Dein Equipment als Asset.">
+<title>Slopy — Dein Ski. Immer in Top-Zustand.</title>
+<meta name="description" content="Slopy bringt professionellen Ski-Service zu dir nach Hause. Buchen, abholen lassen, tracken. Für Privatpersonen, Unternehmen und Hotels.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Syne:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-/* ════════════════════════════════════════════════════════════
-   RESET + ROOT
-════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth}
+body{background:#faf9f6;color:#1c1a17;font-family:'Instrument Sans',sans-serif;font-weight:300;line-height:1.65;overflow-x:hidden}
+
+/* ═══════════════════════════════════════════════
+   VARIABLES
+═══════════════════════════════════════════════ */
 :root{
-  --void:#06080b;
-  --deep:#0c0f14;
-  --surface:#111419;
-  --raise:#181c23;
-  --border:rgba(255,255,255,.06);
-  --border2:rgba(255,255,255,.1);
-  --blue:#3d7fff;
-  --blue-bright:#5c9bff;
-  --blue-dim:rgba(61,127,255,.12);
-  --blue-glow:rgba(61,127,255,.25);
-  --white:#ffffff;
-  --fg:rgba(255,255,255,.9);
-  --fg2:rgba(255,255,255,.5);
-  --fg3:rgba(255,255,255,.25);
-  --fg4:rgba(255,255,255,.1);
-  --green:#00d68f;
-  --green-dim:rgba(0,214,143,.12);
-  --fp:'Playfair Display',Georgia,serif;
-  --fs:'Syne',sans-serif;
-  --fm:'DM Mono',monospace;
+  --cream:#faf9f6;
+  --cream2:#f4f2ed;
+  --cream3:#ede9e0;
+  --ink:#1c1a17;
+  --ink2:#3a3730;
+  --ink3:#6b6560;
+  --ink4:#9e9890;
+  --blue:#1d5fc4;
+  --blue2:#2d72d8;
+  --blue-bg:#eef3fc;
+  --blue-border:#c5d8f5;
+  --alpine:#2a4a2e;
+  --line:#e8e4dc;
+  --line2:#d8d3c8;
+  --r:10px;
+  --rs:6px;
+  --shadow:0 2px 16px rgba(28,26,23,.07);
+  --shadow-l:0 8px 40px rgba(28,26,23,.1);
 }
-html{font-size:16px;scroll-behavior:smooth}
-body{background:var(--void);color:var(--fg);font-family:var(--fs);font-weight:300;line-height:1.6;overflow-x:hidden;cursor:none}
 
-/* ════════════════════════════════════════════════════════════
-   CURSOR
-════════════════════════════════════════════════════════════ */
-#cur{position:fixed;width:5px;height:5px;background:#fff;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
-#cur-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(255,255,255,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,opacity .3s,border-color .3s}
-body:has(a:hover) #cur,body:has(button:hover) #cur{width:14px;height:14px;background:var(--blue)}
-body:has(a:hover) #cur-ring,body:has(button:hover) #cur-ring{width:48px;height:48px;border-color:rgba(61,127,255,.4)}
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════ */
+h1,h2,h3,h4{font-family:'DM Serif Display',Georgia,serif;font-weight:400;line-height:1.1;letter-spacing:-.01em}
+.display{font-size:clamp(2.6rem,6vw,5.2rem)}
+.headline{font-size:clamp(2rem,4vw,3.4rem)}
+.subhead{font-size:clamp(1.3rem,2.5vw,2rem)}
+.eyebrow{font-family:'DM Mono',monospace;font-size:.75rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4)}
+.body-l{font-size:1.15rem;line-height:1.75;font-weight:300}
+.body-m{font-size:1rem;line-height:1.7;font-weight:300}
+.body-s{font-size:.875rem;line-height:1.65;font-weight:300}
+.mono{font-family:'DM Mono',monospace;font-weight:400}
 
-/* ════════════════════════════════════════════════════════════
-   NAVBAR
-════════════════════════════════════════════════════════════ */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 48px;display:flex;align-items:center;justify-content:space-between;transition:all .5s}
-.nav.solid{background:rgba(6,8,11,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:16px 48px;border-bottom:1px solid var(--border)}
-@media(max-width:768px){.nav,.nav.solid{padding:18px 24px}}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
-.nav-wordmark{font-family:var(--fp);font-weight:300;font-size:1.05rem;letter-spacing:.35em;text-transform:lowercase;color:#fff}
-.nav-links{display:flex;align-items:center;gap:40px}
-.nav-links a{font-family:var(--fs);font-size:.72rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--fg2);text-decoration:none;transition:color .25s}
-.nav-links a:hover{color:#fff}
-.nav-btn{font-family:var(--fs);font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;background:var(--blue);color:#fff;padding:10px 22px;border-radius:3px;text-decoration:none;transition:all .2s;border:none;cursor:none}
-.nav-btn:hover{background:var(--blue-bright);transform:translateY(-1px)}
-.hamburger{display:none;cursor:none;gap:5px;flex-direction:column;padding:6px}
-.hamburger span{width:20px;height:1px;background:var(--fg2);transition:all .3s;display:block}
-@media(max-width:900px){.nav-links{display:none}.hamburger{display:flex}}
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+@media(max-width:600px){.wrap{padding:0 20px}}
+section{padding:100px 0}
+@media(max-width:768px){section{padding:72px 0}}
+.divider{height:1px;background:var(--line);margin:0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr;gap:48px}}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+@media(max-width:700px){.grid-3{grid-template-columns:1fr}}
 
-/* ════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,249,246,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:border-color .3s,padding .3s;padding:0 32px}
+.nav.scrolled{border-color:var(--line)}
+.nav-inner{max-width:1120px;margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.nav-wordmark{font-family:'DM Serif Display',serif;font-size:1.3rem;letter-spacing:.02em;color:var(--ink)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:.88rem;font-weight:400;color:var(--ink3);text-decoration:none;transition:color .2s;letter-spacing:.01em}
+.nav-links a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.lang-toggle{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;background:var(--cream2);border:1px solid var(--line);color:var(--ink3);padding:6px 12px;border-radius:4px;cursor:pointer;transition:all .2s;font-weight:400}
+.lang-toggle:hover{border-color:var(--blue);color:var(--blue)}
+.btn-nav{font-size:.88rem;font-weight:500;background:var(--blue);color:#fff;padding:9px 22px;border-radius:var(--rs);text-decoration:none;transition:all .2s;border:none;cursor:pointer;letter-spacing:.01em}
+.btn-nav:hover{background:#164fa8;transform:translateY(-1px)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:1.5px;background:var(--ink);transition:all .3s;display:block}
+@media(max-width:860px){.nav-links{display:none}.hamburger{display:flex}}
+@media(max-width:500px){.nav{padding:0 20px}}
+
+/* ═══════════════════════════════════════════════
    MOBILE MENU
-════════════════════════════════════════════════════════════ */
-.mmenu{position:fixed;inset:0;z-index:90;background:var(--void);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+═══════════════════════════════════════════════ */
+.mmenu{position:fixed;inset:0;z-index:90;background:var(--cream);padding:100px 32px 40px;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;gap:0}
 .mmenu.open{transform:none}
-.mmenu a{font-family:var(--fp);font-weight:300;font-style:italic;font-size:2.5rem;color:var(--fg2);text-decoration:none;transition:color .2s}
-.mmenu a:hover{color:#fff}
+.mmenu a{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--ink);text-decoration:none;padding:16px 0;border-bottom:1px solid var(--line);display:block}
+.mmenu a:hover{color:var(--blue)}
 
-/* ════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    HERO
-════════════════════════════════════════════════════════════ */
-.hero{min-height:100vh;display:grid;place-items:center;position:relative;overflow:hidden;padding:120px 48px 80px}
-@media(max-width:768px){.hero{padding:100px 24px 60px}}
+═══════════════════════════════════════════════ */
+.hero{padding-top:130px;padding-bottom:100px;background:linear-gradient(165deg,var(--cream) 0%,var(--cream2) 60%,#e8eef8 100%);position:relative;overflow:hidden}
+@media(max-width:768px){.hero{padding-top:110px;padding-bottom:72px}}
+.hero-geo{position:absolute;right:-80px;top:-80px;width:560px;height:560px;border-radius:50%;background:radial-gradient(ellipse,rgba(45,114,216,.07) 0%,transparent 70%);pointer-events:none}
+.hero-geo2{position:absolute;left:-120px;bottom:-120px;width:400px;height:400px;border-radius:50%;background:radial-gradient(ellipse,rgba(42,74,46,.04) 0%,transparent 70%);pointer-events:none}
+.hero-inner{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center;max-width:1120px;margin:0 auto;padding:0 32px}
+@media(max-width:960px){.hero-inner{grid-template-columns:1fr;gap:48px}.hero-visual{order:-1}}
+@media(max-width:600px){.hero-inner{padding:0 20px}}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-border);padding:6px 14px;border-radius:50px;margin-bottom:24px}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.hero-title{font-size:clamp(2.8rem,6vw,4.8rem);line-height:1.05;margin-bottom:24px;color:var(--ink)}
+.hero-title em{font-style:italic;color:var(--blue)}
+.hero-sub{font-size:1.15rem;font-weight:300;color:var(--ink2);line-height:1.75;margin-bottom:36px;max-width:480px}
+.hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:40px}
+.btn-primary{font-size:.95rem;font-weight:500;background:var(--blue);color:#fff;padding:14px 28px;border-radius:var(--rs);text-decoration:none;transition:all .25s;border:none;cursor:pointer;letter-spacing:.01em;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:#164fa8;transform:translateY(-2px);box-shadow:0 8px 24px rgba(29,95,196,.25)}
+.btn-secondary{font-size:.95rem;font-weight:400;color:var(--ink2);padding:14px 24px;border-radius:var(--rs);text-decoration:none;transition:all .2s;border:1.5px solid var(--line2);background:transparent;cursor:pointer;letter-spacing:.01em;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:var(--ink2);color:var(--ink)}
+.hero-proof{display:flex;align-items:center;gap:16px;font-size:.85rem;color:var(--ink4);flex-wrap:wrap}
+.hero-proof-item{display:flex;align-items:center;gap:6px}
+.hero-proof-item::before{content:'✓';color:var(--blue);font-weight:600}
 
-/* Animated background */
-.hero-canvas{position:absolute;inset:0;z-index:0}
-.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:breathe 8s ease-in-out infinite;pointer-events:none}
-.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(61,127,255,.15),transparent 70%);top:-200px;right:-100px;animation-delay:0s}
-.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(0,214,143,.08),transparent 70%);bottom:0;left:-150px;animation-delay:-3s}
-.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(61,127,255,.1),transparent 70%);top:40%;left:40%;animation-delay:-6s}
-@keyframes breathe{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.1) translateY(-20px)}}
+/* HERO VISUAL — Pass Mockup */
+.hero-visual{position:relative}
+.hero-card{background:#fff;border-radius:16px;padding:28px;box-shadow:var(--shadow-l);position:relative;max-width:360px}
+@media(max-width:960px){.hero-card{max-width:100%}}
+.hc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.hc-logo{font-family:'DM Serif Display',serif;font-size:.95rem;letter-spacing:.08em;color:var(--blue)}
+.hc-cert{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue);padding:4px 10px;border-radius:50px;display:flex;align-items:center;gap:5px}
+.hc-cert::before{content:'';width:5px;height:5px;border-radius:50%;background:#22c55e}
+.hc-kpi-lbl{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);margin-bottom:4px}
+.hc-kpi-val{font-family:'DM Serif Display',serif;font-size:2.8rem;color:var(--ink);line-height:1;margin-bottom:3px}
+.hc-kpi-delta{font-size:.82rem;color:#16a34a;font-weight:400;margin-bottom:20px}
+.hc-divider{height:1px;background:var(--line);margin:16px 0}
+.hc-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.hc-meta-item .val{font-size:.9rem;font-weight:500;color:var(--ink);margin-bottom:2px}
+.hc-meta-item .lbl{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+.hc-health{display:flex;flex-direction:column;gap:8px}
+.hh-row{display:flex;align-items:center;gap:10px}
+.hh-lbl{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4);width:54px;flex-shrink:0}
+.hh-track{flex:1;height:4px;background:var(--cream2);border-radius:2px;overflow:hidden}
+.hh-fill{height:100%;border-radius:2px;background:linear-gradient(to right,#22c55e,#16a34a);transition:width .8s ease}
+.hh-pct{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--ink3);width:32px;text-align:right;flex-shrink:0}
+.hero-card-float{position:absolute;bottom:-20px;right:-20px;background:#fff;border-radius:10px;padding:12px 16px;box-shadow:var(--shadow-l);border:1px solid var(--line);min-width:160px}
+@media(max-width:960px){.hero-card-float{right:0;bottom:-16px}}
+.hcf-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink4);margin-bottom:4px}
+.hcf-status{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:500;color:var(--ink)}
+.hcf-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.3)}50%{box-shadow:0 0 0 5px transparent}}
 
-/* Mountain */
-.hero-mountain{position:absolute;bottom:0;left:0;right:0;z-index:1;opacity:.08}
-.hero-mountain svg{width:100%;height:auto;display:block}
+/* ═══════════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════════ */
+.ticker{background:var(--cream2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;overflow:hidden}
+.ticker-track{display:flex;animation:ticker 38s linear infinite;white-space:nowrap}
+.ticker-item{display:flex;align-items:center;gap:14px;padding:0 28px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);flex-shrink:0}
+.ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);flex-shrink:0}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* Grid lines */
-.hero-grid{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse at 50% 50%,black 30%,transparent 80%)}
+/* ═══════════════════════════════════════════════
+   PROBLEM / WHY
+═══════════════════════════════════════════════ */
+.why{background:#fff}
+.why-inner{display:grid;grid-template-columns:1fr 1.6fr;gap:80px;align-items:start}
+@media(max-width:900px){.why-inner{grid-template-columns:1fr;gap:48px}}
+.why-title{font-size:clamp(1.8rem,3.5vw,2.8rem);margin-bottom:16px;line-height:1.15}
+.why-cards{display:flex;flex-direction:column;gap:0}
+.why-card{padding:24px 0;border-bottom:1px solid var(--line);display:flex;gap:20px;align-items:flex-start;transition:padding-left .2s}
+.why-card:hover{padding-left:6px}
+.why-card:first-child{border-top:1px solid var(--line)}
+.why-icon{width:42px;height:42px;border-radius:8px;background:var(--blue-bg);border:1px solid var(--blue-border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-top:2px}
+.why-card-title{font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:4px;color:var(--ink)}
+.why-card-body{font-size:.92rem;color:var(--ink3);line-height:1.65;font-weight:300}
 
-.hero-content{position:relative;z-index:2;text-align:center;max-width:900px}
-.hero-pre{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--blue-bright);background:var(--blue-dim);border:1px solid rgba(61,127,255,.2);padding:6px 16px;border-radius:50px;margin-bottom:36px;animation:fadeUp .8s .1s both}
-.hero-pre span{width:5px;height:5px;border-radius:50%;background:var(--blue-bright);display:inline-block}
-.hero-h1{font-family:var(--fp);font-weight:300;font-size:clamp(3.2rem,9vw,8rem);line-height:.92;letter-spacing:-.02em;margin-bottom:28px;animation:fadeUp .9s .25s both}
-.hero-h1 em{font-style:italic;color:var(--fg3);display:block}
-.hero-h1 strong{font-weight:400;color:#fff}
-.hero-sub{font-family:var(--fs);font-size:clamp(.9rem,2vw,1.1rem);font-weight:300;color:var(--fg2);line-height:1.8;max-width:520px;margin:0 auto 40px;animation:fadeUp .9s .4s both}
-.hero-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;animation:fadeUp .9s .55s both}
-.btn-hero-p{font-family:var(--fs);font-size:.8rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;background:var(--blue);color:#fff;padding:16px 36px;border-radius:3px;text-decoration:none;transition:all .25s;border:none;cursor:none;display:inline-flex;align-items:center;gap:8px}
-.btn-hero-p:hover{background:var(--blue-bright);transform:translateY(-2px);box-shadow:0 12px 40px rgba(61,127,255,.4)}
-.btn-hero-s{font-family:var(--fs);font-size:.78rem;font-weight:400;letter-spacing:.08em;color:var(--fg2);padding:16px 28px;text-decoration:none;border:1px solid var(--border2);border-radius:3px;transition:all .25s;cursor:none}
-.btn-hero-s:hover{color:#fff;border-color:rgba(255,255,255,.3)}
-.hero-scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeUp .8s 1.2s both}
-.hero-scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--blue),transparent);animation:lineGrow 1.5s ease infinite}
-@keyframes lineGrow{0%{height:0;opacity:1}100%{height:40px;opacity:0}}
-.hero-scroll-label{font-family:var(--fm);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg3)}
+/* ═══════════════════════════════════════════════
+   HOW — STEPS
+═══════════════════════════════════════════════ */
+.how{background:var(--cream)}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:64px}
+@media(max-width:768px){.how-steps{grid-template-columns:1fr;gap:0}}
+.how-step{position:relative}
+@media(max-width:768px){.how-step{padding:28px 0;border-bottom:1px solid var(--line)}.how-step:last-child{border-bottom:none}}
+.how-step-num{font-family:'DM Mono',monospace;font-size:3rem;font-weight:300;color:var(--cream3);line-height:1;margin-bottom:20px;letter-spacing:-.02em}
+.how-step-title{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:10px;color:var(--ink)}
+.how-step-body{font-size:.95rem;color:var(--ink3);line-height:1.7;font-weight:300}
+.how-connector{position:absolute;top:28px;left:calc(100% - 16px);width:32px;height:1px;background:var(--line2);display:none}
+@media(min-width:769px){.how-connector{display:block}}
+.how-step:last-child .how-connector{display:none}
 
-/* ════════════════════════════════════════════════════════════
-   SOCIAL PROOF STRIP
-════════════════════════════════════════════════════════════ */
-.strip{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--deep);overflow:hidden;padding:16px 0}
-.strip-inner{display:flex;animation:marquee 35s linear infinite;white-space:nowrap}
-.strip-item{display:flex;align-items:center;gap:16px;padding:0 32px;font-family:var(--fm);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg3);flex-shrink:0}
-.strip-dot{width:3px;height:3px;background:var(--blue);border-radius:50%;flex-shrink:0}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* ═══════════════════════════════════════════════
+   SERVICES / PRICING
+═══════════════════════════════════════════════ */
+.services{background:#fff}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:64px}
+@media(max-width:860px){.services-grid{grid-template-columns:1fr;max-width:440px;margin-left:auto;margin-right:auto}}
+.svc{border:1.5px solid var(--line);border-radius:var(--r);padding:36px 32px;position:relative;transition:all .25s;background:#fff;cursor:default}
+.svc:hover{border-color:var(--blue-border);box-shadow:var(--shadow-l);transform:translateY(-3px)}
+.svc.featured{border-color:var(--blue);background:linear-gradient(160deg,var(--blue-bg),#fff)}
+.svc-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;background:var(--blue);color:#fff;padding:4px 14px;border-radius:0 0 6px 6px;white-space:nowrap}
+.svc-days{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.1em;color:var(--ink4);margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.svc-days::before{content:'';width:12px;height:1px;background:var(--line2)}
+.svc-price{font-family:'DM Serif Display',serif;font-size:3.2rem;color:var(--ink);line-height:1;margin-bottom:4px}
+.svc-name{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--ink);margin-bottom:8px}
+.svc-desc{font-size:.9rem;color:var(--ink3);line-height:1.65;margin-bottom:24px;font-weight:300}
+.svc-feats{list-style:none;display:flex;flex-direction:column;gap:9px;padding-top:20px;border-top:1px solid var(--line)}
+.svc-feat{font-size:.88rem;color:var(--ink3);display:flex;align-items:baseline;gap:10px;font-weight:300}
+.svc-feat::before{content:'';width:16px;height:1px;background:var(--blue);flex-shrink:0;margin-top:9px}
+.services-note{text-align:center;margin-top:28px;font-size:.88rem;color:var(--ink4);font-weight:300}
 
-/* ════════════════════════════════════════════════════════════
-   SECTIONS BASE
-════════════════════════════════════════════════════════════ */
-section{padding:130px 48px}
-@media(max-width:768px){section{padding:90px 24px}}
-.wrap{max-width:1200px;margin:0 auto}
-.eyebrow{font-family:var(--fm);font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.eyebrow::before{content:'';width:20px;height:1px;background:var(--blue);flex-shrink:0}
-.headline{font-family:var(--fp);font-weight:300;font-size:clamp(2rem,5vw,3.8rem);line-height:1.05;letter-spacing:-.015em;margin-bottom:20px}
-.headline em{font-style:italic;color:var(--fg3)}
-.body-text{font-size:1rem;font-weight:300;color:var(--fg2);line-height:1.85;max-width:480px}
+/* ═══════════════════════════════════════════════
+   FOR WHOM — 3 PERSONAS
+═══════════════════════════════════════════════ */
+.personas{background:var(--cream2)}
+.persona-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:64px}
+@media(max-width:768px){.persona-grid{grid-template-columns:1fr}}
+.persona{background:var(--cream);padding:44px 36px;transition:background .2s}
+.persona:hover{background:#fff}
+.persona-icon{font-size:2.4rem;margin-bottom:20px;display:block}
+.persona-title{font-family:'DM Serif Display',serif;font-size:1.6rem;margin-bottom:12px;color:var(--ink)}
+.persona-body{font-size:.95rem;color:var(--ink3);line-height:1.75;margin-bottom:24px;font-weight:300}
+.persona-points{display:flex;flex-direction:column;gap:8px;padding-top:20px;border-top:1px solid var(--line)}
+.persona-pt{font-size:.88rem;color:var(--ink2);display:flex;align-items:baseline;gap:10px;font-weight:300}
+.persona-pt::before{content:'→';color:var(--blue);font-weight:500;flex-shrink:0}
 
-/* ════════════════════════════════════════════════════════════
-   STATEMENT SECTION
-════════════════════════════════════════════════════════════ */
-.statement{background:var(--deep);position:relative;overflow:hidden}
-.statement-inner{display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:center}
-@media(max-width:900px){.statement-inner{grid-template-columns:1fr;gap:60px}}
-.statement-quote{font-family:var(--fp);font-weight:300;font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.2;letter-spacing:-.01em}
-.statement-quote em{font-style:italic;color:var(--fg3)}
-.statement-quote mark{background:none;color:var(--blue-bright)}
-.stats-col{display:flex;flex-direction:column;gap:32px}
-.stat-item{border-left:1px solid var(--border);padding-left:28px;position:relative}
-.stat-item::before{content:'';position:absolute;left:-1px;top:0;height:0;width:1px;background:var(--blue);transition:height .6s cubic-bezier(.16,1,.3,1)}
-.stat-item.visible::before{height:100%}
-.stat-number{font-family:var(--fm);font-size:2.8rem;font-weight:300;color:#fff;line-height:1;letter-spacing:-.03em;margin-bottom:6px}
-.stat-label{font-size:.82rem;color:var(--fg3);font-weight:300;line-height:1.5}
+/* ═══════════════════════════════════════════════
+   SUSTAINABILITY / BENEFIT
+═══════════════════════════════════════════════ */
+.sustain{background:#fff;border-top:1px solid var(--line)}
+.sustain-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+@media(max-width:900px){.sustain-inner{grid-template-columns:1fr;gap:48px}}
+.sustain-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sustain-stat{background:var(--cream2);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.sustain-stat-num{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--ink);line-height:1;margin-bottom:4px}
+.sustain-stat-lbl{font-size:.85rem;color:var(--ink3);font-weight:300;line-height:1.5}
 
-/* ════════════════════════════════════════════════════════════
-   HOW IT WORKS
-════════════════════════════════════════════════════════════ */
-.how{position:relative}
-.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:80px;position:relative}
-.how-steps::after{content:'';position:absolute;top:28px;left:calc(33% + 20px);right:calc(33% + 20px);height:1px;background:linear-gradient(to right,var(--blue),var(--border),var(--blue));z-index:0}
-@media(max-width:768px){.how-steps{grid-template-columns:1fr;gap:0}.how-steps::after{display:none}}
-.how-step{padding:0 48px;position:relative;z-index:1}
-.how-step:first-child{padding-left:0}
-.how-step:last-child{padding-right:0}
-@media(max-width:768px){.how-step{padding:28px 0;border-bottom:1px solid var(--border)}.how-step:last-child{border-bottom:none}}
-.how-num{width:56px;height:56px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.78rem;letter-spacing:.1em;color:var(--blue-bright);background:var(--blue-dim);margin-bottom:28px;position:relative}
-.how-num::after{content:'';position:absolute;top:50%;left:100%;width:100%;height:1px;background:linear-gradient(to right,var(--border2),transparent);transform:translateY(-50%)}
-@media(max-width:768px){.how-num::after{display:none}}
-.how-step:last-child .how-num::after{display:none}
-.how-title{font-family:var(--fp);font-weight:300;font-size:1.5rem;letter-spacing:-.01em;margin-bottom:12px}
-.how-body{font-size:.85rem;font-weight:300;color:var(--fg2);line-height:1.75}
-
-/* ════════════════════════════════════════════════════════════
-   SERVICES
-════════════════════════════════════════════════════════════ */
-.services{background:var(--deep)}
-.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:72px;border-radius:4px;overflow:hidden}
-@media(max-width:768px){.services-grid{grid-template-columns:1fr}}
-.svc{background:var(--deep);padding:44px 40px;transition:background .3s;cursor:none;position:relative;display:flex;flex-direction:column}
-.svc:hover{background:var(--surface)}
-.svc-tag{font-family:var(--fm);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--fg3);margin-bottom:28px;display:flex;align-items:center;gap:8px}
-.svc-tag::before{content:'';width:12px;height:1px;background:var(--border2)}
-.svc-price{font-family:var(--fm);font-size:3rem;font-weight:300;color:#fff;line-height:1;margin-bottom:6px;letter-spacing:-.03em}
-.svc-name{font-family:var(--fp);font-weight:300;font-size:1.4rem;letter-spacing:-.01em;margin-bottom:10px}
-.svc-desc{font-size:.82rem;color:var(--fg2);font-weight:300;line-height:1.7;margin-bottom:32px}
-.svc-list{list-style:none;flex:1;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--border);padding-top:24px}
-.svc-li{font-size:.8rem;color:var(--fg3);display:flex;align-items:center;gap:10px;font-weight:300}
-.svc-li::before{content:'';width:14px;height:1px;background:var(--blue);flex-shrink:0}
-.svc-badge{position:absolute;top:0;right:40px;font-family:var(--fm);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;background:var(--blue);color:#fff;padding:5px 12px;border-radius:0 0 4px 4px}
-.svc-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--blue),var(--blue-bright));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.16,1,.3,1)}
-.svc:hover .svc-bar{transform:scaleX(1)}
-
-/* ════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    DIGITAL PASS
-════════════════════════════════════════════════════════════ */
-.dpass{position:relative;overflow:hidden}
-.dpass-inner{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
-@media(max-width:900px){.dpass-inner{grid-template-columns:1fr;gap:60px}}
-.features{display:flex;flex-direction:column;gap:0}
-.feat{display:flex;align-items:flex-start;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);transition:padding .25s}
-.feat:first-child{border-top:1px solid var(--border)}
-.feat:hover{padding-left:6px}
-.feat-icon{width:38px;height:38px;border-radius:3px;background:var(--blue-dim);border:1px solid rgba(61,127,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
-.feat-title{font-size:.88rem;font-weight:500;margin-bottom:4px;letter-spacing:.01em}
-.feat-body{font-size:.78rem;color:var(--fg2);line-height:1.65;font-weight:300}
+═══════════════════════════════════════════════ */
+.dpass{background:var(--cream)}
+.dpass-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+@media(max-width:900px){.dpass-inner{grid-template-columns:1fr;gap:48px}}
+.dpass-features{display:flex;flex-direction:column;gap:0;margin-top:40px}
+.dp-feat{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.dp-feat:first-child{border-top:1px solid var(--line)}
+.dp-feat-icon{width:36px;height:36px;border-radius:6px;background:var(--blue-bg);border:1px solid var(--blue-border);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:2px}
+.dp-feat-title{font-size:.95rem;font-weight:500;color:var(--ink);margin-bottom:3px}
+.dp-feat-body{font-size:.88rem;color:var(--ink3);line-height:1.6;font-weight:300}
 
-/* Pass mockup */
-.pass{background:linear-gradient(145deg,#0d1929,#091420);border-radius:16px;padding:36px;position:relative;overflow:hidden;box-shadow:0 60px 120px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05)}
-.pass::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(61,127,255,.12),transparent 70%);border-radius:50%;pointer-events:none}
-.pass-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.pass-certified{font-family:var(--fm);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;background:rgba(61,127,255,.15);border:1px solid rgba(61,127,255,.25);color:var(--blue-bright);padding:5px 12px;border-radius:50px;display:flex;align-items:center;gap:5px}
-.pass-certified::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%}
-.pass-kpi-lbl{font-family:var(--fm);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:6px}
-.pass-kpi-val{font-family:var(--fm);font-size:3.2rem;font-weight:300;color:#fff;line-height:1;letter-spacing:-.03em;margin-bottom:4px}
-.pass-delta{font-size:.75rem;color:var(--green);margin-bottom:28px}
-.pass-divider{height:1px;background:rgba(255,255,255,.05);margin:20px 0}
-.pass-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.pass-meta-item{display:flex;flex-direction:column;gap:4px}
-.pass-meta-val{font-family:var(--fm);font-size:.95rem;color:#fff}
-.pass-meta-lbl{font-family:var(--fm);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.25)}
-.pass-health{margin-top:24px;display:flex;flex-direction:column;gap:10px}
-.ph-row{display:flex;align-items:center;gap:12px}
-.ph-lbl{font-family:var(--fm);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);width:52px;flex-shrink:0}
-.ph-track{flex:1;height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden}
-.ph-fill{height:100%;border-radius:1px;transition:width .8s cubic-bezier(.16,1,.3,1)}
-.ph-pct{font-family:var(--fm);font-size:.62rem;color:rgba(255,255,255,.4);width:30px;text-align:right;flex-shrink:0}
-.pass-footer{margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center}
-.pass-id{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;color:rgba(255,255,255,.2)}
-.pass-espr{font-family:var(--fm);font-size:.58rem;letter-spacing:.1em;color:rgba(61,127,255,.5)}
+/* Pass card */
+.pass-card{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:32px;box-shadow:var(--shadow-l)}
+.pc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.pc-logo-text{font-family:'DM Serif Display',serif;font-size:1rem;letter-spacing:.06em;color:var(--blue)}
+.pc-cert{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;background:#dcfce7;border:1px solid #bbf7d0;color:#15803d;padding:4px 10px;border-radius:50px;display:flex;align-items:center;gap:5px}
+.pc-cert::before{content:'';width:5px;height:5px;border-radius:50%;background:#22c55e}
+.pc-resale-lbl{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px}
+.pc-resale{font-family:'DM Serif Display',serif;font-size:3rem;color:var(--ink);line-height:1;margin-bottom:4px}
+.pc-delta{font-size:.85rem;color:#16a34a;font-weight:400;margin-bottom:24px}
+.pc-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pc-meta-val{font-size:.92rem;font-weight:500;color:var(--ink);margin-bottom:2px}
+.pc-meta-lbl{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+.pc-health{display:flex;flex-direction:column;gap:10px}
+.ph-row{display:flex;align-items:center;gap:10px}
+.ph-lbl{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4);width:52px;flex-shrink:0}
+.ph-track{flex:1;height:5px;background:var(--cream2);border-radius:3px;overflow:hidden}
+.ph-fill{height:100%;border-radius:3px;background:linear-gradient(to right,#22c55e,#16a34a)}
+.ph-pct{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--ink3);width:32px;text-align:right}
+.pc-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.pc-id{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--ink4)}
+.pc-espr{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:var(--blue)}
 
-/* ════════════════════════════════════════════════════════════
-   BRAND MOMENT
-════════════════════════════════════════════════════════════ */
-.brand-moment{background:var(--deep);position:relative;overflow:hidden;padding:160px 48px}
-@media(max-width:768px){.brand-moment{padding:100px 24px}}
-.brand-moment-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(61,127,255,.08) 0%,transparent 60%)}
-.brand-moment-inner{text-align:center;max-width:800px;margin:0 auto;position:relative;z-index:1}
-.bm-quote{font-family:var(--fp);font-weight:300;font-style:italic;font-size:clamp(1.8rem,5vw,3.8rem);line-height:1.2;letter-spacing:-.01em;color:rgba(255,255,255,.85);margin-bottom:28px}
-.bm-attrib{font-family:var(--fm);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--fg3)}
+/* ═══════════════════════════════════════════════
+   BRAND STATEMENT
+═══════════════════════════════════════════════ */
+.statement{background:var(--ink);padding:100px 0;position:relative;overflow:hidden}
+.statement-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(29,95,196,.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(42,74,46,.08) 0%,transparent 60%);pointer-events:none}
+.statement-inner{max-width:840px;margin:0 auto;padding:0 32px;text-align:center;position:relative}
+@media(max-width:600px){.statement-inner{padding:0 20px}}
+.statement-quote{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,4vw,3.2rem);color:rgba(255,255,255,.9);line-height:1.2;margin-bottom:24px;font-style:italic}
+.statement-attrib{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35)}
 
-/* ════════════════════════════════════════════════════════════
-   LOYALTY
-════════════════════════════════════════════════════════════ */
-.loyalty{position:relative;overflow:hidden}
-.loyalty-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:72px}
-@media(max-width:768px){.loyalty-grid{grid-template-columns:1fr}}
-.loy{background:var(--void);padding:44px 40px;position:relative;overflow:hidden;transition:background .3s;cursor:none}
-.loy:hover{background:var(--surface)}
-.loy-n{font-family:var(--fm);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:20px}
-.loy-title{font-family:var(--fp);font-weight:300;font-size:1.4rem;letter-spacing:-.01em;margin-bottom:12px}
-.loy-body{font-size:.82rem;color:var(--fg2);font-weight:300;line-height:1.75}
-.loy-glow{position:absolute;bottom:-60px;right:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(61,127,255,.06),transparent 70%);pointer-events:none;transition:opacity .4s}
-.loy:hover .loy-glow{opacity:2}
+/* ═══════════════════════════════════════════════
+   CTA
+═══════════════════════════════════════════════ */
+.cta-section{background:var(--blue-bg);border-top:1px solid var(--blue-border);border-bottom:1px solid var(--blue-border)}
+.cta-inner{max-width:640px;margin:0 auto;text-align:center;position:relative}
+.cta-title{font-size:clamp(2rem,4vw,3rem);margin-bottom:14px;color:var(--ink)}
+.cta-sub{font-size:1.05rem;color:var(--ink3);line-height:1.75;margin-bottom:36px;font-weight:300}
+.cta-form{display:flex;max-width:460px;margin:0 auto 14px;border-radius:var(--rs);overflow:hidden;border:1.5px solid var(--blue-border);box-shadow:0 2px 8px rgba(29,95,196,.08)}
+.cta-input{flex:1;padding:15px 18px;border:none;background:#fff;color:var(--ink);font-family:'Instrument Sans',sans-serif;font-size:.95rem;outline:none}
+.cta-input::placeholder{color:var(--ink4)}
+.cta-submit{padding:15px 24px;background:var(--blue);border:none;color:#fff;font-family:'Instrument Sans',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:background .2s;white-space:nowrap;letter-spacing:.01em}
+.cta-submit:hover{background:#164fa8}
+.cta-note{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink4);text-align:center}
+.cta-note a{color:var(--blue);text-decoration:none}
 
-/* ════════════════════════════════════════════════════════════
-   CTA SECTION
-════════════════════════════════════════════════════════════ */
-.cta-section{position:relative;overflow:hidden;padding:160px 48px}
-@media(max-width:768px){.cta-section{padding:100px 24px}}
-.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(61,127,255,.12),transparent 70%);pointer-events:none}
-.cta-inner{text-align:center;max-width:680px;margin:0 auto;position:relative;z-index:1}
-.cta-h{font-family:var(--fp);font-weight:300;font-size:clamp(2.2rem,6vw,4rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}
-.cta-h em{font-style:italic;color:var(--fg3)}
-.cta-sub{font-size:.95rem;color:var(--fg2);font-weight:300;line-height:1.8;margin-bottom:36px}
-.cta-form{display:flex;max-width:460px;margin:0 auto 16px}
-.cta-input{flex:1;padding:16px 20px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-right:none;color:#fff;font-family:var(--fs);font-size:.88rem;outline:none;border-radius:3px 0 0 3px;transition:border-color .2s}
-.cta-input::placeholder{color:var(--fg3)}
-.cta-input:focus{border-color:rgba(61,127,255,.5);background:rgba(61,127,255,.05)}
-.cta-btn{padding:16px 28px;background:var(--blue);border:none;color:#fff;font-family:var(--fs);font-size:.78rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:none;border-radius:0 3px 3px 0;transition:background .2s;white-space:nowrap}
-.cta-btn:hover{background:var(--blue-bright)}
-.cta-hint{font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fg3)}
-
-/* ════════════════════════════════════════════════════════════
-   CORPORATE SECTION (own page feel within same HTML)
-════════════════════════════════════════════════════════════ */
-.corp-hero{min-height:80vh;display:grid;place-items:center;background:var(--deep);position:relative;overflow:hidden;padding:120px 48px 80px}
-@media(max-width:768px){.corp-hero{padding:100px 24px 60px}}
-.corp-hero-bg{position:absolute;inset:0}
-.corp-orb{position:absolute;width:700px;height:400px;border-radius:50%;background:radial-gradient(ellipse,rgba(61,127,255,.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(40px)}
-.corp-hero-inner{position:relative;z-index:1;text-align:center;max-width:780px}
-.corp-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg3);border:1px solid var(--border);padding:6px 16px;border-radius:50px;margin-bottom:32px}
-
-.corp-types{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin:72px 0}
-@media(max-width:900px){.corp-types{grid-template-columns:1fr 1fr}}
-@media(max-width:500px){.corp-types{grid-template-columns:1fr}}
-.corp-type{background:var(--deep);padding:32px 28px;text-align:center;cursor:none;transition:background .25s}
-.corp-type:hover{background:var(--surface)}
-.corp-type-icon{font-size:1.8rem;display:block;margin-bottom:14px}
-.corp-type-name{font-size:.82rem;font-weight:500;margin-bottom:4px}
-.corp-type-desc{font-size:.72rem;color:var(--fg3);font-weight:300;line-height:1.5}
-
-.corp-features{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:72px}
-@media(max-width:768px){.corp-features{grid-template-columns:1fr}}
-.corp-feat{background:var(--deep);padding:40px;cursor:none;transition:background .25s}
-.corp-feat:hover{background:var(--surface)}
-.corp-feat-title{font-family:var(--fp);font-weight:300;font-size:1.2rem;letter-spacing:-.01em;margin-bottom:8px}
-.corp-feat-body{font-size:.82rem;color:var(--fg2);font-weight:300;line-height:1.7}
-
-.corp-pricing{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:700px;margin:0 auto}
-@media(max-width:600px){.corp-pricing{grid-template-columns:1fr}}
-.corp-plan{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:36px;text-align:center;transition:border-color .25s}
-.corp-plan:hover{border-color:rgba(61,127,255,.3)}
-.corp-plan.featured{border-color:rgba(61,127,255,.25);background:linear-gradient(135deg,rgba(61,127,255,.05),var(--surface))}
-.corp-plan-price{font-family:var(--fm);font-size:2.8rem;font-weight:300;color:#fff;line-height:1;margin-bottom:4px;letter-spacing:-.03em}
-.corp-plan-name{font-family:var(--fp);font-weight:300;font-size:1.1rem;letter-spacing:-.01em;margin-bottom:8px}
-.corp-plan-desc{font-size:.78rem;color:var(--fg3);margin-bottom:24px;font-weight:300;line-height:1.6}
-.corp-plan-btn{display:block;font-family:var(--fs);font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:12px 24px;border-radius:3px;text-decoration:none;transition:all .2s;cursor:none;text-align:center}
-.corp-plan-btn-p{background:var(--blue);color:#fff;border:1px solid var(--blue)}
-.corp-plan-btn-p:hover{background:var(--blue-bright)}
-.corp-plan-btn-s{background:transparent;color:var(--fg2);border:1px solid var(--border2)}
-.corp-plan-btn-s:hover{border-color:rgba(255,255,255,.3);color:#fff}
-
-/* ════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    FOOTER
-════════════════════════════════════════════════════════════ */
-footer{border-top:1px solid var(--border);padding:72px 48px 40px;background:var(--void)}
-@media(max-width:768px){footer{padding:60px 24px 32px}}
-.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:60px;margin-bottom:64px}
-@media(max-width:1000px){.footer-top{grid-template-columns:1fr 1fr;gap:48px}}
-@media(max-width:600px){.footer-top{grid-template-columns:1fr;gap:36px}}
-.footer-wordmark{font-family:var(--fp);font-weight:300;font-size:.95rem;letter-spacing:.35em;text-transform:lowercase;color:#fff;margin-bottom:4px}
-.footer-tagline{font-size:.78rem;color:var(--fg3);font-weight:300;line-height:1.7;margin-top:14px;max-width:200px}
-.footer-col-h{font-family:var(--fm);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--fg3);margin-bottom:18px}
-.footer-links{display:flex;flex-direction:column;gap:12px}
-.footer-links a{font-size:.82rem;color:var(--fg2);text-decoration:none;font-weight:300;transition:color .2s}
-.footer-links a:hover{color:#fff}
-.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:32px;border-top:1px solid var(--border);flex-wrap:wrap;gap:12px}
-.footer-copy{font-family:var(--fm);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3)}
-.footer-live{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3)}
-.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s ease infinite}
-@keyframes blink{0%,100%{box-shadow:0 0 0 0 rgba(0,214,143,.4)}50%{box-shadow:0 0 0 4px transparent}}
+═══════════════════════════════════════════════ */
+footer{background:var(--ink2);padding:72px 0 40px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:48px;margin-bottom:56px}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;gap:36px}}
+@media(max-width:560px){.footer-grid{grid-template-columns:1fr;gap:28px}}
+.footer-brand{font-family:'DM Serif Display',serif;font-size:1.2rem;letter-spacing:.04em;color:rgba(255,255,255,.9);margin-bottom:12px}
+.footer-tagline{font-size:.85rem;color:rgba(255,255,255,.4);line-height:1.7;font-weight:300;max-width:200px}
+.footer-col-h{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px}
+.footer-links{display:flex;flex-direction:column;gap:10px}
+.footer-links a{font-size:.88rem;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s;font-weight:300}
+.footer-links a:hover{color:rgba(255,255,255,.9)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid rgba(255,255,255,.08);flex-wrap:wrap;gap:12px}
+.footer-copy{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.footer-status{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.fs-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0;animation:blink 2.5s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
 .footer-legal{display:flex;gap:20px}
-.footer-legal a{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);text-decoration:none;transition:color .2s}
-.footer-legal a:hover{color:#fff}
+.footer-legal a{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);text-decoration:none;transition:color .2s}
+.footer-legal a:hover{color:rgba(255,255,255,.6)}
 
-/* ════════════════════════════════════════════════════════════
-   ANIMATIONS
-════════════════════════════════════════════════════════════ */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
-.reveal.in{opacity:1;transform:none}
-.reveal-l{opacity:0;transform:translateX(-20px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
-.reveal-l.in{opacity:1;transform:none}
-.reveal-r{opacity:0;transform:translateX(20px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
-.reveal-r.in{opacity:1;transform:none}
-[class*="reveal"].d1{transition-delay:.1s}
-[class*="reveal"].d2{transition-delay:.2s}
-[class*="reveal"].d3{transition-delay:.3s}
-[class*="reveal"].d4{transition-delay:.4s}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+/* ═══════════════════════════════════════════════
+   REVEAL ANIMATIONS
+═══════════════════════════════════════════════ */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+.rv-l{opacity:0;transform:translateX(-16px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1)}
+.rv-l.in{opacity:1;transform:none}
+.rv-r{opacity:0;transform:translateX(16px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1)}
+.rv-r.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════════════════════════
+   LANG SWITCH — hide/show
+═══════════════════════════════════════════════ */
+.en-content{display:none}
+.de-content{display:block}
+html[lang="en"] .en-content{display:block}
+html[lang="en"] .de-content{display:none}
+html[lang="en"] .de-only{display:none}
+html[lang="en"] .en-only{display:inline}
+.en-only{display:none}
+html[lang="de"] .de-only{display:inline}
+html[lang="de"] .en-only{display:none}
 </style>
 </head>
 <body>
 
-<!-- Cursor -->
-<div id="cur"></div>
-<div id="cur-ring"></div>
-
-<!-- Mobile menu -->
+<!-- Mobile Menu -->
 <div class="mmenu" id="mmenu">
-  <a href="#how" onclick="closeMenu()">Wie es funktioniert</a>
-  <a href="#services" onclick="closeMenu()">Services</a>
-  <a href="#pass" onclick="closeMenu()">Digital Pass</a>
-  <a href="#corporate" onclick="closeMenu()">Corporate</a>
-  <a href="https://project-26tt1.vercel.app" target="_blank">App öffnen →</a>
+  <a href="#warum" onclick="closeMenu()"><span class="de-content">Warum Slopy</span><span class="en-content">Why Slopy</span></a>
+  <a href="#preise" onclick="closeMenu()"><span class="de-content">Preise</span><span class="en-content">Pricing</span></a>
+  <a href="#fuer-wen" onclick="closeMenu()"><span class="de-content">Für wen</span><span class="en-content">Who it's for</span></a>
+  <a href="#digital-pass" onclick="closeMenu()">Digital Pass</a>
+  <a href="https://project-26tt1.vercel.app" target="_blank"><span class="de-content">App öffnen →</span><span class="en-content">Open App →</span></a>
 </div>
 
 <!-- Nav -->
 <nav class="nav" id="nav">
-  <a href="/" class="nav-logo">
-    <svg width="30" height="30" viewBox="0 0 400 400"><circle cx="200" cy="200" r="195" fill="#3d7fff"/><path d="M 226,80 C 271,67 120,116 124,160 C 128,200 232,191 232,235 C 232,271 125,284 143,290" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/><path d="M 196,93 C 238,83 147,127 151,169 C 155,207 196,200 196,242 C 196,276 148,284 163,290" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".42"/></svg>
-    <span class="nav-wordmark">slopy</span>
-  </a>
-  <div class="nav-links">
-    <a href="#how">Wie es funktioniert</a>
-    <a href="#services">Services</a>
-    <a href="#pass">Digital Pass</a>
-    <a href="#corporate">Corporate</a>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 400 400"><circle cx="200" cy="200" r="195" fill="#1d5fc4"/><path d="M 226,80 C 271,67 120,116 124,160 C 128,200 232,191 232,235 C 232,271 125,284 143,290" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/><path d="M 196,93 C 238,83 147,127 151,169 C 155,207 196,200 196,242 C 196,276 148,284 163,290" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".45"/></svg>
+      <span class="nav-wordmark">Slopy</span>
+    </a>
+    <div class="nav-links">
+      <a href="#warum"><span class="de-only">Warum Slopy</span><span class="en-only">Why Slopy</span></a>
+      <a href="#preise"><span class="de-only">Preise</span><span class="en-only">Pricing</span></a>
+      <a href="#fuer-wen"><span class="de-only">Für wen</span><span class="en-only">Who it's for</span></a>
+      <a href="#digital-pass">Digital Pass</a>
+    </div>
+    <div class="nav-right">
+      <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN</button>
+      <a href="https://project-26tt1.vercel.app" target="_blank" class="btn-nav">
+        <span class="de-only">App starten</span><span class="en-only">Open App</span>
+      </a>
+    </div>
+    <div class="hamburger" id="hbg" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
-  <a href="https://project-26tt1.vercel.app" target="_blank" class="nav-btn">App starten</a>
-  <div class="hamburger" id="hbg" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 </nav>
 
-<!-- ═══════════════════════════════════════ HERO ═══ -->
-<section class="hero">
-  <div class="hero-canvas">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
-  <div class="hero-grid"></div>
-  <div class="hero-mountain">
-    <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      <path d="M0,320 L0,220 L80,190 L160,210 L260,140 L360,170 L460,90 L540,120 L620,60 L700,100 L780,30 L860,70 L940,20 L1020,55 L1100,10 L1180,45 L1280,80 L1360,120 L1440,100 L1440,320Z" fill="white"/>
-    </svg>
-  </div>
-
-  <div class="hero-content">
-    <div class="hero-pre"><span></span> Live · Österreich · Saison 25/26</div>
-    <h1 class="hero-h1">
-      <strong>Dein Equipment.</strong>
-      <em>Endlich digital.</em>
-    </h1>
-    <p class="hero-sub">Slopy ist der erste digitale Service für Premium-Ski-Equipment. Service buchen in 60 Sekunden, live tracken, Wiederverkaufswert steigern.</p>
-    <div class="hero-actions">
-      <a href="https://project-26tt1.vercel.app" target="_blank" class="btn-hero-p">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="5" x2="12" y2="19"/></svg>
-        Kostenlos starten
-      </a>
-      <a href="#how" class="btn-hero-s">Wie es funktioniert</a>
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div class="hero-geo"></div><div class="hero-geo2"></div>
+  <div class="hero-inner">
+    <div>
+      <!-- DE -->
+      <div class="de-content">
+        <div class="hero-tag" style="animation:fadeUp .6s .1s both">Jetzt verfügbar · Österreich</div>
+        <h1 class="hero-title" style="animation:fadeUp .7s .2s both">Dein Ski.<br><em>Immer in Top-Zustand.</em></h1>
+        <p class="hero-sub" style="animation:fadeUp .7s .35s both">Professioneller Ski-Service direkt zu dir nach Hause. Buchen in 60 Sekunden, live tracken, Wiederverkaufswert steigern.</p>
+        <div class="hero-actions" style="animation:fadeUp .7s .5s both">
+          <a href="https://project-26tt1.vercel.app" target="_blank" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="5" x2="12" y2="19"/></svg>
+            Kostenlos starten
+          </a>
+          <a href="#preise" class="btn-secondary">Preise ansehen</a>
+        </div>
+        <div class="hero-proof" style="animation:fadeUp .7s .65s both">
+          <div class="hero-proof-item">Kein Abo</div>
+          <div class="hero-proof-item">DHL Abholung</div>
+          <div class="hero-proof-item">Digital Pass inklusive</div>
+        </div>
+      </div>
+      <!-- EN -->
+      <div class="en-content">
+        <div class="hero-tag" style="animation:fadeUp .6s .1s both">Available now · Austria</div>
+        <h1 class="hero-title" style="animation:fadeUp .7s .2s both">Your ski.<br><em>Always in top shape.</em></h1>
+        <p class="hero-sub" style="animation:fadeUp .7s .35s both">Professional ski service delivered to your door. Book in 60 seconds, track live, increase resale value.</p>
+        <div class="hero-actions" style="animation:fadeUp .7s .5s both">
+          <a href="https://project-26tt1.vercel.app" target="_blank" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="5" x2="12" y2="19"/></svg>
+            Start for free
+          </a>
+          <a href="#preise" class="btn-secondary">View pricing</a>
+        </div>
+        <div class="hero-proof" style="animation:fadeUp .7s .65s both">
+          <div class="hero-proof-item">No subscription</div>
+          <div class="hero-proof-item">DHL pickup</div>
+          <div class="hero-proof-item">Digital Pass included</div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="hero-scroll-hint">
-    <div class="hero-scroll-line"></div>
-    <span class="hero-scroll-label">Scroll</span>
-  </div>
-</section>
 
-<!-- ═══════════════════════════ STRIP ═══ -->
-<div class="strip">
-  <div class="strip-inner" id="strip-inner">
-    <div class="strip-item"><div class="strip-dot"></div>DHL Abholung at home</div>
-    <div class="strip-item"><div class="strip-dot"></div>Echtzeit Tracking</div>
-    <div class="strip-item"><div class="strip-dot"></div>Digital Product Pass</div>
-    <div class="strip-item"><div class="strip-dot"></div>EU ESPR konform</div>
-    <div class="strip-item"><div class="strip-dot"></div>Storebox Smart Hubs</div>
-    <div class="strip-item"><div class="strip-dot"></div>Health Score nach jedem Service</div>
-    <div class="strip-item"><div class="strip-dot"></div>Wiederverkaufswert steigern</div>
-    <div class="strip-item"><div class="strip-dot"></div>Corporate Flotten</div>
-    <div class="strip-item"><div class="strip-dot"></div>Zero Friction by Design</div>
-    <div class="strip-item"><div class="strip-dot"></div>DHL Abholung at home</div>
-    <div class="strip-item"><div class="strip-dot"></div>Echtzeit Tracking</div>
-    <div class="strip-item"><div class="strip-dot"></div>Digital Product Pass</div>
-    <div class="strip-item"><div class="strip-dot"></div>EU ESPR konform</div>
-    <div class="strip-item"><div class="strip-dot"></div>Storebox Smart Hubs</div>
-    <div class="strip-item"><div class="strip-dot"></div>Health Score nach jedem Service</div>
-    <div class="strip-item"><div class="strip-dot"></div>Wiederverkaufswert steigern</div>
-    <div class="strip-item"><div class="strip-dot"></div>Corporate Flotten</div>
-    <div class="strip-item"><div class="strip-dot"></div>Zero Friction by Design</div>
+    <!-- Hero Visual — Digital Pass Card -->
+    <div class="hero-visual" style="animation:fadeUp .8s .4s both">
+      <div class="hero-card">
+        <div class="hc-header">
+          <div class="hc-logo">slopy</div>
+          <div class="hc-cert">✓ Certified</div>
+        </div>
+        <div class="hc-kpi-lbl"><span class="de-only">Geschätzter Restwert</span><span class="en-only">Estimated Resale Value</span></div>
+        <div class="hc-kpi-val">€ 1.240</div>
+        <div class="hc-kpi-delta">↑ +22% <span class="de-only">durch Servicehistorie</span><span class="en-only">through service history</span></div>
+        <div class="hc-divider"></div>
+        <div class="hc-meta">
+          <div class="hc-meta-item"><div class="val">Atomic</div><div class="lbl"><span class="de-only">Marke</span><span class="en-only">Brand</span></div></div>
+          <div class="hc-meta-item"><div class="val">Redster</div><div class="lbl"><span class="de-only">Modell</span><span class="en-only">Model</span></div></div>
+          <div class="hc-meta-item"><div class="val">175 cm</div><div class="lbl"><span class="de-only">Länge</span><span class="en-only">Length</span></div></div>
+        </div>
+        <div class="hc-health">
+          <div class="hh-row"><span class="hh-lbl"><span class="de-only">Kanten</span><span class="en-only">Edges</span></span><div class="hh-track"><div class="hh-fill" style="width:89%"></div></div><span class="hh-pct">89%</span></div>
+          <div class="hh-row"><span class="hh-lbl"><span class="de-only">Belag</span><span class="en-only">Base</span></span><div class="hh-track"><div class="hh-fill" style="width:78%"></div></div><span class="hh-pct">78%</span></div>
+          <div class="hh-row"><span class="hh-lbl"><span class="de-only">Wachs</span><span class="en-only">Wax</span></span><div class="hh-track"><div class="hh-fill" style="width:95%"></div></div><span class="hh-pct">95%</span></div>
+        </div>
+      </div>
+      <div class="hero-card-float">
+        <div class="hcf-label"><span class="de-only">Status</span><span class="en-only">Status</span></div>
+        <div class="hcf-status"><div class="hcf-dot"></div><span class="de-only">In Bearbeitung</span><span class="en-only">In service</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════ STATEMENT ═══ -->
-<section class="statement">
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">DHL Abholung at home</span><span class="en-only">DHL home pickup</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Live Tracking</span><span class="en-only">Live tracking</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Digital Product Pass</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>EU ESPR</div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Health Score</span><span class="en-only">Health Score</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Corporate Flotten</span><span class="en-only">Corporate fleets</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Wiederverkaufswert steigern</span><span class="en-only">Increase resale value</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Storebox 24/7</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Zero Friction</div>
+    <!-- duplicate -->
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">DHL Abholung at home</span><span class="en-only">DHL home pickup</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Live Tracking</span><span class="en-only">Live tracking</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Digital Product Pass</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>EU ESPR</div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Health Score</span><span class="en-only">Health Score</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Corporate Flotten</span><span class="en-only">Corporate fleets</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div><span class="de-only">Wiederverkaufswert steigern</span><span class="en-only">Increase resale value</span></div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Storebox 24/7</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Zero Friction</div>
+  </div>
+</div>
+
+<!-- ═══════════ WHY ═══════════ -->
+<section class="why" id="warum">
   <div class="wrap">
-    <div class="statement-inner">
-      <div class="reveal-l">
-        <div class="eyebrow">Unsere Überzeugung</div>
-        <blockquote class="statement-quote">
-          "Dein Ski ist kein<br>Gegenstand.<br>Er ist <mark>ein Asset.</mark><br><em>Behandle ihn so.</em>"
-        </blockquote>
+    <div class="why-inner">
+      <div class="rv-l">
+        <!-- DE -->
+        <div class="de-content">
+          <div class="eyebrow" style="margin-bottom:16px">Das Problem</div>
+          <h2 class="why-title">Guter Ski.<br>Schlechte Pflege.<br>Halber Wert.</h2>
+          <p class="body-m" style="color:var(--ink3);margin-top:16px">Die meisten Skifahrer unterschätzen wie viel ihr Equipment durch fehlende oder seltene Pflege verliert — an Performance, an Haltbarkeit und an Wiederverkaufswert.</p>
+        </div>
+        <!-- EN -->
+        <div class="en-content">
+          <div class="eyebrow" style="margin-bottom:16px">The Problem</div>
+          <h2 class="why-title">Great ski.<br>Poor maintenance.<br>Half the value.</h2>
+          <p class="body-m" style="color:var(--ink3);margin-top:16px">Most skiers underestimate how much their equipment loses through infrequent or neglected maintenance — in performance, durability and resale value.</p>
+        </div>
       </div>
-      <div class="stats-col">
-        <div class="stat-item reveal d1">
-          <div class="stat-number">60s</div>
-          <div class="stat-label">Von der Idee zur gebuchten Abholung — ohne Anruf, ohne Wartezeit.</div>
+      <div class="why-cards rv d1">
+        <!-- DE -->
+        <div class="de-content">
+          <div class="why-card">
+            <div class="why-icon">🗓️</div>
+            <div>
+              <div class="why-card-title">Kein Überblick, wann Service fällig ist</div>
+              <div class="why-card-body">Skifahrer erinnern sich selten wann das letzte Service war. Slopy trackt das automatisch und erinnert dich — bevor es zu spät ist.</div>
+            </div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">🚗</div>
+            <div>
+              <div class="why-card-title">Service braucht Planung und Zeit</div>
+              <div class="why-card-body">Werkstatt suchen, hinfahren, warten. Mit Slopy buchst du in 60 Sekunden — DHL holt ab und liefert zurück. Du musst nichts tun.</div>
+            </div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">📉</div>
+            <div>
+              <div class="why-card-title">Kein Nachweis beim Verkauf</div>
+              <div class="why-card-body">Ohne dokumentierte Historie verkaufst du deinen Ski unter Wert. Slopy erstellt einen zertifizierten Digital Pass der deinen Preis rechtfertigt.</div>
+            </div>
+          </div>
         </div>
-        <div class="stat-item reveal d2">
-          <div class="stat-number">3×</div>
-          <div class="stat-label">Höherer Wiederverkaufswert bei lückenlos dokumentierter Service-Historie.</div>
-        </div>
-        <div class="stat-item reveal d3">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Digital. Nachvollziehbar. EU ESPR-konform. Für immer.</div>
+        <!-- EN -->
+        <div class="en-content">
+          <div class="why-card">
+            <div class="why-icon">🗓️</div>
+            <div>
+              <div class="why-card-title">No visibility on when service is due</div>
+              <div class="why-card-body">Skiers rarely remember when their last service was. Slopy tracks this automatically and reminds you — before it's too late.</div>
+            </div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">🚗</div>
+            <div>
+              <div class="why-card-title">Service requires planning and time</div>
+              <div class="why-card-body">Find a workshop, drive there, wait. With Slopy you book in 60 seconds — DHL picks up and delivers back. You don't have to do anything.</div>
+            </div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">📉</div>
+            <div>
+              <div class="why-card-title">No proof of service when selling</div>
+              <div class="why-card-body">Without documented history you sell your ski below value. Slopy creates a certified Digital Pass that justifies your price.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+<div class="divider"></div>
 
-<!-- ═══════════════════════════ HOW ═══ -->
-<section id="how">
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="how">
   <div class="wrap">
-    <div class="reveal">
-      <div class="eyebrow">So einfach geht's</div>
-      <h2 class="headline">Drei Schritte.<br><em>Kein Aufwand.</em></h2>
+    <div class="rv" style="text-align:center;max-width:600px;margin:0 auto 0">
+      <div class="eyebrow" style="margin-bottom:16px;justify-content:center;display:flex"><span class="de-only">So einfach geht's</span><span class="en-only">How it works</span></div>
+      <!-- DE -->
+      <h2 class="headline de-content">Drei Schritte.<br>Kein Aufwand.</h2>
+      <!-- EN -->
+      <h2 class="headline en-content">Three steps.<br>Zero effort.</h2>
     </div>
     <div class="how-steps">
-      <div class="how-step reveal d1">
-        <div class="how-num">01</div>
-        <h3 class="how-title">Paket wählen</h3>
-        <p class="how-body">Essential, Performance oder World Cup. Logistik festlegen — DHL holt direkt bei dir ab oder du nutzt einen 24/7 Storebox-Hub. Alles in der App, in 60 Sekunden.</p>
+      <!-- DE -->
+      <div class="de-content" style="display:contents">
+        <div class="how-step rv d1"><div class="how-step-num">01</div><div class="how-connector"></div><h3 class="how-step-title">Ski erfassen & buchen</h3><p class="how-step-body">App öffnen, Ski hinzufügen, Paket wählen. Essential (€49), Performance (€79) oder World Cup (€119). DHL-Abholung oder Storebox-Hub festlegen. Fertig in 60 Sekunden.</p></div>
+        <div class="how-step rv d2"><div class="how-step-num">02</div><div class="how-connector"></div><h3 class="how-step-title">Live verfolgen</h3><p class="how-step-body">Vom Abholmoment bis zur Lieferung siehst du jeden Status live in der App. Kein Anruf nötig. Unsere Techniker bearbeiten deinen Ski — du siehst wann er fertig ist.</p></div>
+        <div class="how-step rv d3"><div class="how-step-num">03</div><h3 class="how-step-title">Zurück auf die Piste</h3><p class="how-step-body">Lieferung direkt nach Hause. Der Health Score wird aktualisiert, der Digital Pass zertifiziert — und dein Ski ist bereit für die nächste Abfahrt.</p></div>
       </div>
-      <div class="how-step reveal d2">
-        <div class="how-num">02</div>
-        <h3 class="how-title">Live verfolgen</h3>
-        <p class="how-body">Jeder Status erscheint sofort in der App — von der Abholung bis zur Fertigstellung. Transparenter als jede Autowerkstatt. Du musst nie anrufen.</p>
-      </div>
-      <div class="how-step reveal d3">
-        <div class="how-num">03</div>
-        <h3 class="how-title">Zurück auf die Piste</h3>
-        <p class="how-body">Lieferung nach Hause. Digital Pass aktualisiert sich automatisch mit neuem Health Score, Zertifikat und Service-Dokumentation.</p>
+      <!-- EN -->
+      <div class="en-content" style="display:contents">
+        <div class="how-step rv d1"><div class="how-step-num">01</div><div class="how-connector"></div><h3 class="how-step-title">Add ski & book</h3><p class="how-step-body">Open the app, add your ski, choose a package. Essential (€49), Performance (€79) or World Cup (€119). Schedule DHL pickup or choose a Storebox Hub. Done in 60 seconds.</p></div>
+        <div class="how-step rv d2"><div class="how-step-num">02</div><div class="how-connector"></div><h3 class="how-step-title">Track live</h3><p class="how-step-body">From pickup to delivery you see every status live in the app. No calls needed. Our technicians service your ski — you'll see exactly when it's done.</p></div>
+        <div class="how-step rv d3"><div class="how-step-num">03</div><h3 class="how-step-title">Back on the slope</h3><p class="how-step-body">Delivery straight to your door. Health Score updated, Digital Pass certified — your ski is ready for the next run.</p></div>
       </div>
     </div>
   </div>
 </section>
+<div class="divider"></div>
 
-<!-- ═══════════════════════════ SERVICES ═══ -->
-<section id="services" class="services">
+<!-- ═══════════ PRICING ═══════════ -->
+<section class="services" id="preise">
   <div class="wrap">
-    <div class="reveal">
-      <div class="eyebrow">Service-Pakete</div>
-      <h2 class="headline">Präzision auf<br><em>jedem Niveau.</em></h2>
+    <div class="rv" style="text-align:center;margin-bottom:0">
+      <div class="eyebrow" style="display:flex;justify-content:center;margin-bottom:16px"><span class="de-only">Preise</span><span class="en-only">Pricing</span></div>
+      <!-- DE --><h2 class="headline de-content">Transparent. Fair. Einmalig.</h2>
+      <!-- EN --><h2 class="headline en-content">Transparent. Fair. Pay as you go.</h2>
+      <p class="body-m" style="color:var(--ink3);max-width:480px;margin:14px auto 0"><span class="de-only">Kein Abo, kein Vertrag. Nur Service wenn du ihn brauchst.</span><span class="en-only">No subscription, no contract. Just service when you need it.</span></p>
     </div>
     <div class="services-grid">
-      <div class="svc reveal d1">
-        <div class="svc-bar"></div>
-        <div class="svc-tag">Essential · 3 Werktage</div>
-        <div class="svc-price">€ 49</div>
-        <h3 class="svc-name">Wax & Go</h3>
-        <p class="svc-desc">Alles was du vor jedem Wochenende brauchst. Schnell, zuverlässig, dokumentiert.</p>
-        <ul class="svc-list">
-          <li class="svc-li">Heißwachsen (Fluorwachs)</li>
-          <li class="svc-li">Grundschliff Belag</li>
-          <li class="svc-li">Kanten entgraten</li>
-          <li class="svc-li">Bindungscheck & -einstellung</li>
-          <li class="svc-li">Digital Pass Update</li>
-        </ul>
+      <!-- DE -->
+      <div class="de-content" style="display:contents">
+        <div class="svc rv d1"><div class="svc-days">3 Werktage</div><div class="svc-price">€ 49</div><h3 class="svc-name">Essential</h3><p class="svc-desc">Alles was du vor jedem Wochenende brauchst. Schnell, zuverlässig, zertifiziert.</p><ul class="svc-feats"><li class="svc-feat">Heißwachsen (Fluorwachs)</li><li class="svc-feat">Grundschliff Belag</li><li class="svc-feat">Kanten entgraten</li><li class="svc-feat">Bindungscheck</li><li class="svc-feat">Digital Pass Update</li></ul></div>
+        <div class="svc featured rv d2"><div class="svc-badge">Empfohlen</div><div class="svc-days">5 Werktage</div><div class="svc-price">€ 79</div><h3 class="svc-name">Performance</h3><p class="svc-desc">Der Standard für anspruchsvolle Skifahrer. Maximale Performance, jedes Mal.</p><ul class="svc-feats"><li class="svc-feat">Alles aus Essential</li><li class="svc-feat">Steinschliff Belag</li><li class="svc-feat">Kanten schärfen (0.5–3°)</li><li class="svc-feat">Premium Fluorwachs</li><li class="svc-feat">Zertifizierter Health Score</li></ul></div>
+        <div class="svc rv d3"><div class="svc-days">7 Werktage</div><div class="svc-price">€ 119</div><h3 class="svc-name">World Cup</h3><p class="svc-desc">Werksseitige Behandlung für Equipment das auf höchstem Niveau performen soll.</p><ul class="svc-feats"><li class="svc-feat">Alles aus Performance</li><li class="svc-feat">Belagserneuerung (P-Tex)</li><li class="svc-feat">Profil-Schliff nach Spec</li><li class="svc-feat">Tuning-Zertifikat PDF</li><li class="svc-feat">Wiederverkaufs-Bewertung</li></ul></div>
       </div>
-      <div class="svc reveal d2">
-        <div class="svc-bar"></div>
-        <div class="svc-badge">Empfohlen</div>
-        <div class="svc-tag">Performance · 5 Werktage</div>
-        <div class="svc-price">€ 79</div>
-        <h3 class="svc-name">Race-Ready</h3>
-        <p class="svc-desc">Der Standard für anspruchsvolle Skifahrer. Maximale Performance, jedes Mal.</p>
-        <ul class="svc-list">
-          <li class="svc-li">Alles aus Essential</li>
-          <li class="svc-li">Steinschliff Belag</li>
-          <li class="svc-li">Kanten schärfen (0.5–3°)</li>
-          <li class="svc-li">Premium Fluorwachs</li>
-          <li class="svc-li">Zertifizierter Health Score</li>
-        </ul>
+      <!-- EN -->
+      <div class="en-content" style="display:contents">
+        <div class="svc rv d1"><div class="svc-days">3 working days</div><div class="svc-price">€ 49</div><h3 class="svc-name">Essential</h3><p class="svc-desc">Everything you need before every weekend. Fast, reliable, certified.</p><ul class="svc-feats"><li class="svc-feat">Hot waxing (fluorocarbon)</li><li class="svc-feat">Base grind</li><li class="svc-feat">Edge deburring</li><li class="svc-feat">Binding check</li><li class="svc-feat">Digital Pass update</li></ul></div>
+        <div class="svc featured rv d2"><div class="svc-badge">Recommended</div><div class="svc-days">5 working days</div><div class="svc-price">€ 79</div><h3 class="svc-name">Performance</h3><p class="svc-desc">The standard for demanding skiers. Maximum performance, every time.</p><ul class="svc-feats"><li class="svc-feat">All from Essential</li><li class="svc-feat">Stone grind base</li><li class="svc-feat">Edge sharpening (0.5–3°)</li><li class="svc-feat">Premium fluorocarbon wax</li><li class="svc-feat">Certified Health Score</li></ul></div>
+        <div class="svc rv d3"><div class="svc-days">7 working days</div><div class="svc-price">€ 119</div><h3 class="svc-name">World Cup</h3><p class="svc-desc">Factory-grade treatment for equipment that needs to perform at the highest level.</p><ul class="svc-feats"><li class="svc-feat">All from Performance</li><li class="svc-feat">Base replacement (P-Tex)</li><li class="svc-feat">Profile grind to spec</li><li class="svc-feat">Tuning certificate PDF</li><li class="svc-feat">Resale value assessment</li></ul></div>
       </div>
-      <div class="svc reveal d3">
-        <div class="svc-bar"></div>
-        <div class="svc-tag">World Cup · 7 Werktage</div>
-        <div class="svc-price">€ 119</div>
-        <h3 class="svc-name">Profi-Tuning</h3>
-        <p class="svc-desc">Werksseitige Behandlung für Equipment das auf höchstem Niveau performen soll.</p>
-        <ul class="svc-list">
-          <li class="svc-li">Alles aus Performance</li>
-          <li class="svc-li">Belagserneuerung (P-Tex)</li>
-          <li class="svc-li">Profil-Schliff nach Spec</li>
-          <li class="svc-li">Tuning-Zertifikat PDF</li>
-          <li class="svc-li">Wiederverkaufs-Bewertung</li>
-        </ul>
+    </div>
+    <p class="services-note rv"><span class="de-only">Alle Preise inkl. MwSt. · DHL-Versand hin und zurück inklusive</span><span class="en-only">All prices incl. VAT · DHL shipping both ways included</span></p>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══════════ FOR WHOM ═══════════ -->
+<section class="personas" id="fuer-wen">
+  <div class="wrap">
+    <div class="rv" style="text-align:center;margin-bottom:0">
+      <div class="eyebrow" style="display:flex;justify-content:center;margin-bottom:16px"><span class="de-only">Für wen</span><span class="en-only">Who it's for</span></div>
+      <!-- DE --><h2 class="headline de-content">Jeder der seinen Ski<br>ernst nimmt.</h2>
+      <!-- EN --><h2 class="headline en-content">Everyone who takes<br>their skis seriously.</h2>
+    </div>
+    <div class="persona-grid">
+      <!-- DE -->
+      <div class="de-content" style="display:contents">
+        <div class="persona rv d1">
+          <span class="persona-icon">🎿</span>
+          <h3 class="persona-title">Privatperson</h3>
+          <p class="persona-body">Du liebst das Skifahren und weißt, dass gutes Equipment gut behandelt werden muss. Du willst keinen Aufwand — nur ein perfektes Ergebnis.</p>
+          <div class="persona-points">
+            <div class="persona-pt">Service ohne Planung — buchen, DHL kommt</div>
+            <div class="persona-pt">Immer wissen wie dein Ski steht</div>
+            <div class="persona-pt">Beim Verkauf den fairen Preis bekommen</div>
+          </div>
+        </div>
+        <div class="persona rv d2">
+          <span class="persona-icon">🏢</span>
+          <h3 class="persona-title">Unternehmen</h3>
+          <p class="persona-body">Skiservice als Mitarbeiter-Benefit oder die Firmenskier immer einsatzbereit. Nachhaltig, dokumentiert, einfach verwaltet — ein echter Mehrwert.</p>
+          <div class="persona-points">
+            <div class="persona-pt">Ski-Service als exklusiver Mitarbeiter-Benefit</div>
+            <div class="persona-pt">Sammel-Buchung für mehrere Skier auf einmal</div>
+            <div class="persona-pt">Vollständiges Reporting für die Buchhaltung</div>
+          </div>
+        </div>
+        <div class="persona rv d3">
+          <span class="persona-icon">🏔️</span>
+          <h3 class="persona-title">Hotel & Verleih</h3>
+          <p class="persona-body">Hunderte Skier immer in Top-Zustand — ohne eigene Werkstatt. Gäste und Mitarbeiter sehen jederzeit den aktuellen Zustand jedes einzelnen Skis.</p>
+          <div class="persona-points">
+            <div class="persona-pt">Inventar mit individuellen Ski-IDs (SKI-001…)</div>
+            <div class="persona-pt">Flotten-Health-Score auf einen Blick</div>
+            <div class="persona-pt">EU-konforme Dokumentation für jedes Gerät</div>
+          </div>
+        </div>
+      </div>
+      <!-- EN -->
+      <div class="en-content" style="display:contents">
+        <div class="persona rv d1">
+          <span class="persona-icon">🎿</span>
+          <h3 class="persona-title">Private</h3>
+          <p class="persona-body">You love skiing and know that good equipment needs good care. You want zero effort — just a perfect result.</p>
+          <div class="persona-points">
+            <div class="persona-pt">Service without planning — book, DHL comes</div>
+            <div class="persona-pt">Always know the condition of your ski</div>
+            <div class="persona-pt">Get the fair price when you sell</div>
+          </div>
+        </div>
+        <div class="persona rv d2">
+          <span class="persona-icon">🏢</span>
+          <h3 class="persona-title">Companies</h3>
+          <p class="persona-body">Ski service as an employee benefit or company skis always ready for use. Sustainable, documented, easy to manage — a real added value.</p>
+          <div class="persona-points">
+            <div class="persona-pt">Ski service as an exclusive employee benefit</div>
+            <div class="persona-pt">Group booking for multiple skis at once</div>
+            <div class="persona-pt">Full reporting for accounting</div>
+          </div>
+        </div>
+        <div class="persona rv d3">
+          <span class="persona-icon">🏔️</span>
+          <h3 class="persona-title">Hotels & Rental</h3>
+          <p class="persona-body">Hundreds of skis always in top condition — without your own workshop. Guests and staff see the current condition of every single ski at any time.</p>
+          <div class="persona-points">
+            <div class="persona-pt">Inventory with individual ski IDs (SKI-001…)</div>
+            <div class="persona-pt">Fleet health score at a glance</div>
+            <div class="persona-pt">EU-compliant documentation for every device</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Corporate CTA -->
+    <div class="rv" style="text-align:center;margin-top:36px">
+      <a href="mailto:corporate@slopy.at" class="btn-secondary" style="display:inline-flex">
+        <span class="de-only">Corporate-Anfrage stellen →</span>
+        <span class="en-only">Contact for Corporate pricing →</span>
+      </a>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══════════ SUSTAINABILITY ═══════════ -->
+<section class="sustain">
+  <div class="wrap">
+    <div class="sustain-inner">
+      <div class="rv-l">
+        <!-- DE -->
+        <div class="de-content">
+          <div class="eyebrow" style="margin-bottom:16px">Nachhaltigkeit</div>
+          <h2 class="headline">Länger fahren.<br>Weniger wegwerfen.</h2>
+          <p class="body-m" style="color:var(--ink3);margin-top:20px;margin-bottom:24px">Regelmäßiger Service verlängert die Lebensdauer eines Skis um Jahre. Das ist gut für dein Budget — und für die Umwelt.</p>
+          <p class="body-m" style="color:var(--ink3)">Slopy dokumentiert jeden Service lückenlos. So entsteht eine zertifizierte Historie die beim Weiterverkauf zählt — und Ressourcen spart weil gutes Equipment länger genutzt wird.</p>
+        </div>
+        <!-- EN -->
+        <div class="en-content">
+          <div class="eyebrow" style="margin-bottom:16px">Sustainability</div>
+          <h2 class="headline">Ski longer.<br>Waste less.</h2>
+          <p class="body-m" style="color:var(--ink3);margin-top:20px;margin-bottom:24px">Regular service extends the life of a ski by years. That's good for your budget — and for the environment.</p>
+          <p class="body-m" style="color:var(--ink3)">Slopy documents every service without gaps. This creates a certified history that counts when reselling — and saves resources because good equipment is used longer.</p>
+        </div>
+      </div>
+      <div class="sustain-stat-grid rv d2">
+        <!-- DE -->
+        <div class="de-content" style="display:contents">
+          <div class="sustain-stat"><div class="sustain-stat-num">3×</div><div class="sustain-stat-lbl">höherer Wiederverkaufswert mit dokumentierter Historie</div></div>
+          <div class="sustain-stat"><div class="sustain-stat-num">+5 J.</div><div class="sustain-stat-lbl">längere Lebensdauer bei regelmäßigem Service</div></div>
+          <div class="sustain-stat"><div class="sustain-stat-num">0</div><div class="sustain-stat-lbl">Fahrten zur Werkstatt nötig — DHL kommt zu dir</div></div>
+          <div class="sustain-stat"><div class="sustain-stat-num">100%</div><div class="sustain-stat-lbl">digital dokumentiert — EU ESPR-konform</div></div>
+        </div>
+        <!-- EN -->
+        <div class="en-content" style="display:contents">
+          <div class="sustain-stat"><div class="sustain-stat-num">3×</div><div class="sustain-stat-lbl">higher resale value with documented service history</div></div>
+          <div class="sustain-stat"><div class="sustain-stat-num">+5 y.</div><div class="sustain-stat-lbl">longer lifespan with regular service</div></div>
+          <div class="sustain-stat"><div class="sustain-stat-num">0</div><div class="sustain-stat-lbl">trips to the workshop needed — DHL comes to you</div></div>
+          <div class="sustain-stat"><div class="sustain-stat-num">100%</div><div class="sustain-stat-lbl">digitally documented — EU ESPR-compliant</div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+<div class="divider"></div>
 
-<!-- ═══════════════════════════ DIGITAL PASS ═══ -->
-<section id="pass" class="dpass">
+<!-- ═══════════ DIGITAL PASS ═══════════ -->
+<section class="dpass" id="digital-pass">
   <div class="wrap">
     <div class="dpass-inner">
       <div>
-        <div class="reveal">
-          <div class="eyebrow">Digital Product Pass</div>
-          <h2 class="headline">Dein Ski.<br>Dokumentiert.<br><em>Wertgesichert.</em></h2>
-          <p class="body-text" style="margin-bottom:40px;">Jeder Service wird automatisch erfasst. EU ESPR-konform, fälschungssicher — und ein starkes Argument beim Wiederverkauf.</p>
+        <div class="rv">
+          <div class="eyebrow" style="margin-bottom:16px">Digital Product Pass</div>
+          <!-- DE -->
+          <div class="de-content">
+            <h2 class="headline">Dein Ski.<br>Zertifiziert.<br>Wertgesichert.</h2>
+            <p class="body-m" style="color:var(--ink3);margin-top:16px">Jeder Service wird automatisch im Digital Product Pass erfasst. Fälschungssicher, EU-konform — und dein stärkstes Argument beim Wiederverkauf.</p>
+          </div>
+          <!-- EN -->
+          <div class="en-content">
+            <h2 class="headline">Your ski.<br>Certified.<br>Value-secured.</h2>
+            <p class="body-m" style="color:var(--ink3);margin-top:16px">Every service is automatically recorded in the Digital Product Pass. Tamper-proof, EU-compliant — and your strongest argument when reselling.</p>
+          </div>
         </div>
-        <div class="features">
-          <div class="feat reveal d1">
-            <div class="feat-icon">🔐</div>
-            <div>
-              <div class="feat-title">EU ESPR konform</div>
-              <div class="feat-body">PASSAT-Standard für digitale Produktpässe — dieselbe Technologie die das Luxussegment verwendet.</div>
-            </div>
+        <div class="dpass-features">
+          <!-- DE -->
+          <div class="de-content" style="display:contents">
+            <div class="dp-feat rv d1"><div class="dp-feat-icon">🔐</div><div><div class="dp-feat-title">EU ESPR konform</div><div class="dp-feat-body">PASSAT-Standard — dieselbe Norm die das Luxus- und Elektroniksegment verwendet. Dein Ski ist zukunftssicher dokumentiert.</div></div></div>
+            <div class="dp-feat rv d2"><div class="dp-feat-icon">📈</div><div><div class="dp-feat-title">Wiederverkaufswert steigern</div><div class="dp-feat-body">Dokumentierte Service-Historie kann den Wiederverkaufswert um bis zu 30% erhöhen. Jeder Käufer sieht was er bekommt.</div></div></div>
+            <div class="dp-feat rv d3"><div class="dp-feat-icon">💚</div><div><div class="dp-feat-title">Health Score in Echtzeit</div><div class="dp-feat-body">Kanten, Belag und Wachs werden nach jedem Service aktualisiert. Du siehst immer den aktuellen Zustand deines Equipments.</div></div></div>
           </div>
-          <div class="feat reveal d2">
-            <div class="feat-icon">📈</div>
-            <div>
-              <div class="feat-title">Wiederverkaufswert steigern</div>
-              <div class="feat-body">Dokumentierte Service-Historie erhöht den Wiederverkaufswert nachweislich um bis zu 30%.</div>
-            </div>
-          </div>
-          <div class="feat reveal d3">
-            <div class="feat-icon">💚</div>
-            <div>
-              <div class="feat-title">Health Score</div>
-              <div class="feat-body">Kanten, Belag und Wachs werden nach jedem Service aktualisiert. Du siehst immer den Zustand deines Equipments.</div>
-            </div>
-          </div>
-          <div class="feat reveal d4">
-            <div class="feat-icon">📡</div>
-            <div>
-              <div class="feat-title">Echtzeit-Tracking</div>
-              <div class="feat-body">Von der Abholung bis zur Lieferung. Jeder Status erscheint sofort — ohne Anruf, ohne Warten.</div>
-            </div>
+          <!-- EN -->
+          <div class="en-content" style="display:contents">
+            <div class="dp-feat rv d1"><div class="dp-feat-icon">🔐</div><div><div class="dp-feat-title">EU ESPR compliant</div><div class="dp-feat-body">PASSAT standard — the same regulation used in luxury and electronics. Your ski is future-proof documented.</div></div></div>
+            <div class="dp-feat rv d2"><div class="dp-feat-icon">📈</div><div><div class="dp-feat-title">Increase resale value</div><div class="dp-feat-body">Documented service history can increase resale value by up to 30%. Every buyer sees exactly what they're getting.</div></div></div>
+            <div class="dp-feat rv d3"><div class="dp-feat-icon">💚</div><div><div class="dp-feat-title">Real-time Health Score</div><div class="dp-feat-body">Edges, base and wax are updated after every service. You always see the current condition of your equipment.</div></div></div>
           </div>
         </div>
       </div>
-      <div class="reveal-r">
-        <div class="pass">
-          <div class="pass-header">
+      <div class="rv-r">
+        <div class="pass-card">
+          <div class="pc-header">
             <div>
-              <div style="font-family:var(--fm);font-size:.65rem;letter-spacing:6px;color:var(--blue-bright);margin-bottom:2px;">slopy</div>
-              <div style="font-size:.52rem;color:rgba(255,255,255,.25);letter-spacing:.18em;text-transform:uppercase;font-family:var(--fm);">Digital Product Pass</div>
+              <div class="pc-logo-text">slopy</div>
+              <div style="font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);margin-top:2px">Digital Product Pass</div>
             </div>
-            <div class="pass-certified">✓ Certified</div>
+            <div class="pc-cert">✓ Certified</div>
           </div>
-          <div class="pass-kpi-lbl">Geschätzter Restwert</div>
-          <div class="pass-kpi-val">€ 1.240</div>
-          <div class="pass-delta">↑ +18% durch dokumentierte Service-Historie</div>
-          <div class="pass-divider"></div>
-          <div class="pass-meta">
-            <div class="pass-meta-item"><div class="pass-meta-val">Atomic</div><div class="pass-meta-lbl">Marke</div></div>
-            <div class="pass-meta-item"><div class="pass-meta-val">Redster X9i</div><div class="pass-meta-lbl">Modell</div></div>
-            <div class="pass-meta-item"><div class="pass-meta-val">175 cm</div><div class="pass-meta-lbl">Länge</div></div>
+          <div class="pc-resale-lbl"><span class="de-only">Geschätzter Restwert</span><span class="en-only">Estimated Resale Value</span></div>
+          <div class="pc-resale">€ 1.240</div>
+          <div class="pc-delta">↑ +22% <span class="de-only">durch Service-Historie</span><span class="en-only">through service history</span></div>
+          <div class="pc-meta">
+            <div class="pc-meta-item"><div class="pc-meta-val">Atomic</div><div class="pc-meta-lbl"><span class="de-only">Marke</span><span class="en-only">Brand</span></div></div>
+            <div class="pc-meta-item"><div class="pc-meta-val">Redster X9i</div><div class="pc-meta-lbl"><span class="de-only">Modell</span><span class="en-only">Model</span></div></div>
+            <div class="pc-meta-item"><div class="pc-meta-val">175 cm</div><div class="pc-meta-lbl"><span class="de-only">Länge</span><span class="en-only">Length</span></div></div>
           </div>
-          <div class="pass-health">
-            <div class="ph-row">
-              <span class="ph-lbl">Kanten</span>
-              <div class="ph-track"><div class="ph-fill" style="width:88%;background:#00d68f;"></div></div>
-              <span class="ph-pct">88%</span>
-            </div>
-            <div class="ph-row">
-              <span class="ph-lbl">Belag</span>
-              <div class="ph-track"><div class="ph-fill" style="width:76%;background:#00d68f;"></div></div>
-              <span class="ph-pct">76%</span>
-            </div>
-            <div class="ph-row">
-              <span class="ph-lbl">Wachs</span>
-              <div class="ph-track"><div class="ph-fill" style="width:95%;background:#00d68f;"></div></div>
-              <span class="ph-pct">95%</span>
-            </div>
+          <div class="pc-health">
+            <div class="ph-row"><span class="ph-lbl"><span class="de-only">Kanten</span><span class="en-only">Edges</span></span><div class="ph-track"><div class="ph-fill" style="width:89%"></div></div><span class="ph-pct">89%</span></div>
+            <div class="ph-row"><span class="ph-lbl"><span class="de-only">Belag</span><span class="en-only">Base</span></span><div class="ph-track"><div class="ph-fill" style="width:78%"></div></div><span class="ph-pct">78%</span></div>
+            <div class="ph-row"><span class="ph-lbl"><span class="de-only">Wachs</span><span class="en-only">Wax</span></span><div class="ph-track"><div class="ph-fill" style="width:95%"></div></div><span class="ph-pct">95%</span></div>
           </div>
-          <div class="pass-footer">
-            <div class="pass-id">SLP-2025-ATM-X9I-003</div>
-            <div class="pass-espr">EU ESPR · PASSAT</div>
+          <div class="pc-footer">
+            <div class="pc-id">SLP-2025-ATM-X9I-003</div>
+            <div class="pc-espr">EU ESPR · PASSAT</div>
           </div>
         </div>
       </div>
@@ -628,258 +793,153 @@ footer{border-top:1px solid var(--border);padding:72px 48px 40px;background:var(
   </div>
 </section>
 
-<!-- ═══════════════════════════ BRAND MOMENT ═══ -->
-<div class="brand-moment">
-  <div class="brand-moment-bg"></div>
-  <div class="brand-moment-inner reveal">
-    <div class="eyebrow" style="justify-content:center;margin-bottom:24px;">Unser Versprechen</div>
-    <blockquote class="bm-quote">"Wir machen keinen Service.<br>Wir setzen den Standard."</blockquote>
-    <div class="bm-attrib">— Slopy · Zero Friction. Smart Assets. Perfect Slopes.</div>
+<!-- ═══════════ BRAND STATEMENT ═══════════ -->
+<div class="statement">
+  <div class="statement-bg"></div>
+  <div class="statement-inner rv">
+    <!-- DE -->
+    <div class="de-content">
+      <blockquote class="statement-quote">"Wir erfinden den Ski-Service nicht neu. Wir machen ihn endlich so einfach wie er immer hätte sein sollen."</blockquote>
+    </div>
+    <!-- EN -->
+    <div class="en-content">
+      <blockquote class="statement-quote">"We're not reinventing ski service. We're finally making it as simple as it always should have been."</blockquote>
+    </div>
+    <div class="statement-attrib">— Slopy · Zero Friction. Smart Assets. Perfect Slopes.</div>
   </div>
 </div>
 
-<!-- ═══════════════════════════ LOYALTY ═══ -->
-<section>
-  <div class="wrap">
-    <div class="reveal">
-      <div class="eyebrow">Community & Loyalty</div>
-      <h2 class="headline">Mehr als<br><em>ein Service.</em></h2>
-      <p class="body-text">Slopy verbindet Premium-Skifahrer die verstehen dass exzellentes Equipment exzellente Pflege verdient.</p>
-    </div>
-    <div class="loyalty-grid">
-      <div class="loy reveal d1">
-        <div class="loy-glow"></div>
-        <div class="loy-n">01 — Status</div>
-        <h3 class="loy-title">Slopy Member</h3>
-        <p class="loy-body">Mehr Services — höherer Status. Member, Expert, Master. Mit jedem Level wachsen exklusive Vorteile, Rabatte und Early Access zu neuen Features.</p>
-      </div>
-      <div class="loy reveal d2">
-        <div class="loy-glow"></div>
-        <div class="loy-n">02 — Teilen</div>
-        <h3 class="loy-title">Pass teilen</h3>
-        <p class="loy-body">Teile deinen Digital Pass auf WhatsApp oder Instagram. Kein Angeben — nur Fakten. Health Score, Servicehistorie, zertifizierter Zustand deines Equipments.</p>
-      </div>
-      <div class="loy reveal d3">
-        <div class="loy-glow"></div>
-        <div class="loy-n">03 — Wert</div>
-        <h3 class="loy-title">Smarter Verkauf</h3>
-        <p class="loy-body">Wenn du verkaufen willst, weiß der Käufer genau was er bekommt. Vollständige Historie, zertifizierter Zustand — der fairste Preis für beide Seiten.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ CTA ═══ -->
+<!-- ═══════════ CTA ═══════════ -->
 <section class="cta-section">
-  <div class="cta-glow"></div>
-  <div class="cta-inner">
-    <div class="reveal">
-      <div class="eyebrow" style="justify-content:center;margin-bottom:24px;">Early Access</div>
-      <h2 class="cta-h">Dein erster<br><em>Service wartet.</em></h2>
-      <p class="cta-sub">Werde Teil der ersten 500 Slopy Members. Kostenlos. Kein Kreditkarte nötig. Einfach starten.</p>
-      <div class="cta-form">
-        <input class="cta-input" type="email" id="cta-email" placeholder="deine@email.at">
-        <button class="cta-btn" onclick="handleCTA()">Starten →</button>
+  <div class="wrap">
+    <div class="cta-inner rv">
+      <!-- DE -->
+      <div class="de-content">
+        <div class="eyebrow" style="display:flex;justify-content:center;margin-bottom:20px">Jetzt starten</div>
+        <h2 class="cta-title">Dein erster Service<br>ist einen Klick entfernt.</h2>
+        <p class="cta-sub">Kostenlos registrieren, Ski hinzufügen, Service buchen. Kein Abo, kein Risiko.</p>
+        <div class="cta-form">
+          <input class="cta-input" type="email" id="cta-email" placeholder="deine@email.at">
+          <button class="cta-submit" onclick="handleCTA()">Starten →</button>
+        </div>
+        <div class="cta-note">Oder direkt zur App: <a href="https://project-26tt1.vercel.app" target="_blank">project-26tt1.vercel.app</a></div>
       </div>
-      <div class="cta-hint">Oder direkt zur App — keine Installation nötig</div>
+      <!-- EN -->
+      <div class="en-content">
+        <div class="eyebrow" style="display:flex;justify-content:center;margin-bottom:20px">Get started</div>
+        <h2 class="cta-title">Your first service<br>is one click away.</h2>
+        <p class="cta-sub">Register for free, add your ski, book a service. No subscription, no risk.</p>
+        <div class="cta-form">
+          <input class="cta-input" type="email" id="cta-email-en" placeholder="your@email.com">
+          <button class="cta-submit" onclick="handleCTA('en')">Start →</button>
+        </div>
+        <div class="cta-note">Or go straight to the app: <a href="https://project-26tt1.vercel.app" target="_blank">project-26tt1.vercel.app</a></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════ CORPORATE SECTION ═══ -->
-<div id="corporate">
-  <div class="corp-hero">
-    <div class="corp-hero-bg"><div class="corp-orb"></div></div>
-    <div class="corp-hero-inner reveal">
-      <div class="corp-tag">Slopy Corporate</div>
-      <h2 class="headline" style="font-size:clamp(2.5rem,7vw,5.5rem);margin-bottom:16px;">Das Rückgrat<br><em>jeder Skiflotte.</em></h2>
-      <p style="font-size:1.05rem;color:var(--fg2);font-weight:300;line-height:1.8;max-width:560px;margin:0 auto 36px;">Hotels, Skischulen, Verleihbetriebe und Unternehmen verwalten ihr gesamtes Equipment-Inventar zentral — mit Inventar-IDs, Sammel-Service und vollständigem Reporting.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="mailto:corporate@slopy.at" class="btn-hero-p">Corporate-Anfrage stellen</a>
-        <a href="#corp-features" class="btn-hero-s">Mehr erfahren</a>
-      </div>
-    </div>
-  </div>
-
-  <section style="background:var(--void);padding:100px 48px" id="corp-features">
-    <div class="wrap">
-      <div class="reveal">
-        <div class="eyebrow">Wer nutzt Slopy Corporate?</div>
-      </div>
-      <div class="corp-types reveal">
-        <div class="corp-type">
-          <span class="corp-type-icon">🏔️</span>
-          <div class="corp-type-name">Hotels & Resorts</div>
-          <div class="corp-type-desc">Skiflotte für Gäste und Mitarbeiter</div>
-        </div>
-        <div class="corp-type">
-          <span class="corp-type-icon">🎿</span>
-          <div class="corp-type-name">Ski-Verleih</div>
-          <div class="corp-type-desc">Vollständige Flottenverwaltung</div>
-        </div>
-        <div class="corp-type">
-          <span class="corp-type-icon">🏫</span>
-          <div class="corp-type-name">Skischulen</div>
-          <div class="corp-type-desc">Equipment für Trainer und Schüler</div>
-        </div>
-        <div class="corp-type">
-          <span class="corp-type-icon">🏢</span>
-          <div class="corp-type-name">Unternehmen</div>
-          <div class="corp-type-desc">Benefits-Programme, Team-Events</div>
-        </div>
-        <div class="corp-type">
-          <span class="corp-type-icon">🏆</span>
-          <div class="corp-type-name">Sportverbände</div>
-          <div class="corp-type-desc">Profi-Equipment-Management</div>
-        </div>
-      </div>
-
-      <div class="corp-features reveal">
-        <div class="corp-feat">
-          <h3 class="corp-feat-title">Inventar mit IDs</h3>
-          <p class="corp-feat-body">Jeder Ski bekommt eine eindeutige ID (SKI-001, SKI-002 …). Vollständige Übersicht über Zustand, Status und Service-Historie jedes einzelnen Geräts.</p>
-        </div>
-        <div class="corp-feat">
-          <h3 class="corp-feat-title">Sammel-Service</h3>
-          <p class="corp-feat-body">Mehrere Skier auf einmal einschicken — eine Buchung, eine Abholung, ein Preis. Skaliert von 5 bis 200+ Geräten.</p>
-        </div>
-        <div class="corp-feat">
-          <h3 class="corp-feat-title">Echtzeit Flotten-Health</h3>
-          <p class="corp-feat-body">Du siehst auf einen Blick welche Skier verfügbar sind, welche im Service sind und welche dringend Aufmerksamkeit brauchen.</p>
-        </div>
-        <div class="corp-feat">
-          <h3 class="corp-feat-title">Service-Historie & Reporting</h3>
-          <p class="corp-feat-body">Vollständige Dokumentation aller Services — exportierbar für die Buchhaltung, Compliance und EU ESPR-Anforderungen.</p>
-        </div>
-      </div>
-
-      <div style="text-align:center;margin-bottom:56px;">
-        <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Preise</div>
-        <h3 class="headline" style="text-align:center;">Einfach. Transparent.<br><em>Skalierbar.</em></h3>
-      </div>
-      <div class="corp-pricing reveal">
-        <div class="corp-plan">
-          <div class="corp-plan-price">€ 49</div>
-          <div style="font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);margin-bottom:16px;">Pro Ski · Standard</div>
-          <h3 class="corp-plan-name">Corporate Essential</h3>
-          <p class="corp-plan-desc">Für Betriebe bis 20 Skier. Alles inklusive, monatliche Abrechnung.</p>
-          <a href="mailto:corporate@slopy.at" class="corp-plan-btn corp-plan-btn-s">Anfrage stellen</a>
-        </div>
-        <div class="corp-plan featured">
-          <div style="font-family:var(--fm);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;background:var(--blue);color:#fff;padding:4px 12px;border-radius:50px;display:inline-block;margin-bottom:16px;">Beliebt</div>
-          <div class="corp-plan-price">€ 40</div>
-          <div style="font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);margin-bottom:16px;">Pro Ski · ab 20 Skier</div>
-          <h3 class="corp-plan-name">Corporate Volume</h3>
-          <p class="corp-plan-desc">Ab 20 Skier. Dedizierter Account Manager, Abhollogistik, Priority-Service.</p>
-          <a href="mailto:corporate@slopy.at" class="corp-plan-btn corp-plan-btn-p">Jetzt anfragen</a>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:28px;font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fg3);">
-        Individuelle Konditionen ab 100 Skier · <a href="mailto:corporate@slopy.at" style="color:var(--blue-bright);text-decoration:none;">Kontakt aufnehmen →</a>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ═══════════════════════════ FOOTER ═══ -->
+<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
-  <div class="footer-top">
-    <div>
-      <div class="footer-wordmark">slopy</div>
-      <p class="footer-tagline">Das Betriebssystem für Premium-Ski-Equipment.</p>
-    </div>
-    <div>
-      <div class="footer-col-h">Produkt</div>
-      <div class="footer-links">
-        <a href="#how">Wie es funktioniert</a>
-        <a href="#services">Services & Preise</a>
-        <a href="#pass">Digital Pass</a>
-        <a href="#corporate">Corporate</a>
-        <a href="https://project-26tt1.vercel.app" target="_blank">App öffnen ↗</a>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Slopy</div>
+        <!-- DE -->
+        <p class="footer-tagline de-content">Das Betriebssystem für Premium-Ski-Equipment. Zero Friction. Smart Assets. Perfect Slopes.</p>
+        <!-- EN -->
+        <p class="footer-tagline en-content">The operating system for premium ski equipment. Zero Friction. Smart Assets. Perfect Slopes.</p>
+      </div>
+      <div>
+        <div class="footer-col-h"><span class="de-only">Produkt</span><span class="en-only">Product</span></div>
+        <div class="footer-links">
+          <a href="#warum"><span class="de-only">Warum Slopy</span><span class="en-only">Why Slopy</span></a>
+          <a href="#preise"><span class="de-only">Preise</span><span class="en-only">Pricing</span></a>
+          <a href="#fuer-wen"><span class="de-only">Für wen</span><span class="en-only">Who it's for</span></a>
+          <a href="#digital-pass">Digital Pass</a>
+          <a href="https://project-26tt1.vercel.app" target="_blank"><span class="de-only">App öffnen ↗</span><span class="en-only">Open App ↗</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-h"><span class="de-only">Unternehmen</span><span class="en-only">Company</span></div>
+        <div class="footer-links">
+          <a href="#"><span class="de-only">Über uns</span><span class="en-only">About</span></a>
+          <a href="#"><span class="de-only">Karriere</span><span class="en-only">Careers</span></a>
+          <a href="mailto:corporate@slopy.at">Corporate</a>
+          <a href="mailto:hallo@slopy.at"><span class="de-only">Kontakt</span><span class="en-only">Contact</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-h">Kontakt</div>
+        <div class="footer-links">
+          <a href="mailto:hallo@slopy.at">hallo@slopy.at</a>
+          <a href="mailto:corporate@slopy.at">corporate@slopy.at</a>
+        </div>
       </div>
     </div>
-    <div>
-      <div class="footer-col-h">Unternehmen</div>
-      <div class="footer-links">
-        <a href="#">Über uns</a>
-        <a href="#">Karriere</a>
-        <a href="mailto:corporate@slopy.at">Partner werden</a>
-        <a href="mailto:hallo@slopy.at">Kontakt</a>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Slopy GmbH (i.G.) · Wien</div>
+      <div class="footer-status"><div class="fs-dot"></div><span class="de-only">Alle Systeme operativ</span><span class="en-only">All systems operational</span></div>
+      <div class="footer-legal">
+        <a href="#"><span class="de-only">Datenschutz</span><span class="en-only">Privacy</span></a>
+        <a href="#"><span class="de-only">AGB</span><span class="en-only">Terms</span></a>
+        <a href="#">Impressum</a>
       </div>
-    </div>
-    <div>
-      <div class="footer-col-h">Kontakt</div>
-      <div class="footer-links">
-        <a href="mailto:hallo@slopy.at">hallo@slopy.at</a>
-        <a href="mailto:corporate@slopy.at">corporate@slopy.at</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <div class="footer-copy">© 2025 Slopy GmbH (i.G.) · Wien</div>
-    <div class="footer-live"><div class="live-dot"></div>Alle Systeme operativ</div>
-    <div class="footer-legal">
-      <a href="#">Datenschutz</a>
-      <a href="#">AGB</a>
-      <a href="#">Impressum</a>
     </div>
   </div>
 </footer>
 
 <script>
-// ── Cursor ────────────────────────────────────────────────
-const cur=document.getElementById('cur'), ring=document.getElementById('cur-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
-(function animRing(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);})();
-
-// ── Nav scroll ────────────────────────────────────────────
+// ── Nav scroll ────────────────────────────────────────
 const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('solid',scrollY>80),{passive:true});
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
 
-// ── Mobile menu ───────────────────────────────────────────
-const mmenu=document.getElementById('mmenu'), hbg=document.getElementById('hbg');
+// ── Mobile menu ───────────────────────────────────────
+const mmenu=document.getElementById('mmenu'),hbg=document.getElementById('hbg');
 let mOpen=false;
-function toggleMenu(){mOpen=!mOpen;mmenu.classList.toggle('open',mOpen);const s=hbg.querySelectorAll('span');if(mOpen){s[0].style.cssText='transform:rotate(45deg) translate(4px,4px)';s[1].style.opacity='0';s[2].style.cssText='transform:rotate(-45deg) translate(4px,-4px)';}else{s[0].style.cssText='';s[1].style.opacity='';s[2].style.cssText='';}}
+function toggleMenu(){
+  mOpen=!mOpen;mmenu.classList.toggle('open',mOpen);
+  const s=hbg.querySelectorAll('span');
+  if(mOpen){s[0].style.cssText='transform:rotate(45deg) translate(4px,4px)';s[1].style.opacity='0';s[2].style.cssText='transform:rotate(-45deg) translate(4px,-4px)';}
+  else{s[0].style.cssText='';s[1].style.opacity='';s[2].style.cssText='';}
+}
 function closeMenu(){if(mOpen)toggleMenu();}
 
-// ── Scroll reveal ─────────────────────────────────────────
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('in');
-      // Stat line animation
-      if(e.target.classList.contains('stat-item'))e.target.classList.add('visible');
-      obs.unobserve(e.target);
-    }
-  });
-},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+// ── Language ─────────────────────────────────────────
+const html=document.getElementById('html-root');
+const langBtn=document.getElementById('lang-btn');
+let currentLang='de';
+function toggleLang(){
+  currentLang=currentLang==='de'?'en':'de';
+  html.setAttribute('lang',currentLang);
+  langBtn.textContent=currentLang==='de'?'EN':'DE';
+  document.title=currentLang==='en'?'Slopy — Your Ski. Always in Top Shape.':'Slopy — Dein Ski. Immer in Top-Zustand.';
+}
 
-// ── CTA ───────────────────────────────────────────────────
-function handleCTA(){
-  const email=document.getElementById('cta-email')?.value?.trim();
+// ── Scroll reveal ─────────────────────────────────────
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
+},{threshold:.1,rootMargin:'0px 0px -32px 0px'});
+document.querySelectorAll('.rv,.rv-l,.rv-r').forEach(el=>obs.observe(el));
+
+// ── CTA ───────────────────────────────────────────────
+function handleCTA(lang){
+  const id=lang==='en'?'cta-email-en':'cta-email';
+  const email=document.getElementById(id)?.value?.trim();
   if(!email||!email.includes('@')){
-    const inp=document.getElementById('cta-email');
-    inp.style.borderColor='rgba(255,80,80,.5)';
-    inp.style.background='rgba(255,0,0,.05)';
-    inp.focus();
-    setTimeout(()=>{inp.style.borderColor='';inp.style.background='';},2000);
+    const inp=document.getElementById(id);
+    if(inp){inp.style.boxShadow='0 0 0 2px rgba(220,38,38,.3)';setTimeout(()=>inp.style.boxShadow='',2000);}
     return;
   }
-  const btn=document.querySelector('.cta-btn');
-  btn.textContent='✓ App öffnet…';
-  btn.style.background='#00d68f';
-
-  // Save to Supabase waitlist
-  const supa=window.supabase?.createClient('https://xxayiwmobayqafdupjab.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4YXlpd21vYmF5cWFmZHVwamFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjAwMDAwMDAwMH0.placeholder');
-  if(supa) supa.from('waitlist').insert({email,source:'website'}).then(()=>{});
-
+  const btn=document.querySelector('.cta-submit');
+  if(btn){btn.textContent=lang==='en'?'✓ Opening app…':'✓ App öffnet…';btn.style.background='#16a34a';}
   setTimeout(()=>window.open('https://project-26tt1.vercel.app','_blank'),700);
 }
-document.getElementById('cta-email')?.addEventListener('keydown',e=>{if(e.key==='Enter')handleCTA();});
+document.querySelectorAll('#cta-email,#cta-email-en').forEach(el=>{
+  el?.addEventListener('keydown',e=>{if(e.key==='Enter')handleCTA(el.id==='cta-email-en'?'en':'de');});
+});
 
-// ── Smooth scroll ─────────────────────────────────────────
+// ── Smooth scroll ─────────────────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click',e=>{
     const t=document.querySelector(a.getAttribute('href'));
